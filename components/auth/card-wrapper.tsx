@@ -1,7 +1,7 @@
 "use client"
 import {Card, CardContent, CardHeader, CardFooter} from "@/components/ui/card"
-import AuthHeader from "./auth-header"
-import BackButton from "./back-button"
+import AuthHeader from "@/components/auth/auth-header"
+import BackButton from "@/components/auth/back-button"
 interface CardWrapperProps {
     label: string;
     title: string;

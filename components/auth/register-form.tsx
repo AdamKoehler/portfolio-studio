@@ -1,6 +1,6 @@
 "use client"
 
-import CardWrapper from "./card-wrapper"
+import CardWrapper from "@/components/auth/card-wrapper"
 import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form"
 import {Input} from "@/components/ui/input"
 import {RegisterFormSchema} from "@/schema"
@@ -8,20 +8,28 @@ import {useForm} from "react-hook-form"
 import {zodResolver} from "@hookform/resolvers/zod"
 import {Button} from "@/components/ui/button"
 import z from "zod"
+import { useState } from "react"
+import { useFormStatus } from "react-dom"
+import { OAuthSeparator } from "@/components/auth/seperator"
+import { useRouter } from "next/router";
+const router = useRouter();
+
 
 const RegisterForm = () => {
+  const [loading, setLoading] = useState(false); // starting state is false, changes upon button click
   const form = useForm({
     resolver: zodResolver(RegisterFormSchema),
     defaultValues: {
       email: "",
-      firstName: "",
-      lastName: "",
+      name: "",
       password: "",
       confirmPassword: "",
     }})
 
+  const { pending } = useFormStatus();
   const onSubmit = (data: z.infer<typeof RegisterFormSchema>) => {
-    console.log(data) // currently it sends data to browser for test
+    setLoading(true); // set loading to true
+    // console.log(data) // currently it sends data to browser for test
     // TODO: check backend for existing user with email, if new user, send data to backend
     // TODO: if user already exists, show error message and redirect to login
   };
@@ -38,33 +46,17 @@ const RegisterForm = () => {
             
             <FormField
             control={form.control}
-            name="firstName"
+            name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="flex items-center justify-center">First Name</FormLabel>
+                <FormLabel className="flex items-center justify-center">Name</FormLabel>
                 <FormControl>
-                  <Input {...field} placeholder="First"
+                  <Input {...field} placeholder="Required"
                   className={`formInput w-full border text-center
-                  ${form.formState.errors.firstName ? 'border-destructive' : 'border-success'}`}/>
+                  ${form.formState.errors.name ? 'border-destructive' : 'border-success'}`}/>
                 </FormControl>
                 <FormMessage className="text-center"/>
               </FormItem >
-            )}
-            />
-
-            <FormField
-            control={form.control}
-            name="lastName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="flex items-center justify-center">Last Name</FormLabel>
-                <FormControl>
-                  <Input {...field} placeholder="Last"
-                  className={`formInput w-full border text-center
-                  ${form.formState.errors.lastName ? 'border-destructive' : 'border-success'}`}/>
-                </FormControl>
-                <FormMessage className="text-center"/>
-              </FormItem>
             )}
             />
 
@@ -116,9 +108,8 @@ const RegisterForm = () => {
             )}
             />
           </div>
-          <Button type="submit" className="w-full mt-4">
-            Register
-          </Button>
+          <Button type="submit" className="w-full mt-4" disabled={pending}>{loading ? "Loading..." : "Register"}</Button>
+          <OAuthSeparator/>
         </form>
       </Form>
     </CardWrapper>
