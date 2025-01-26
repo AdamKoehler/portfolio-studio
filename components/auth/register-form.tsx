@@ -11,8 +11,8 @@ import z from "zod"
 import { useState } from "react"
 import { useFormStatus } from "react-dom"
 import { OAuthSeparator } from "@/components/auth/seperator"
-import { useRouter } from "next/router";
-const router = useRouter();
+//import { useRouter } from "next/router";
+//const router = useRouter();
 
 
 const RegisterForm = () => {
@@ -29,7 +29,7 @@ const RegisterForm = () => {
   const { pending } = useFormStatus();
   const onSubmit = (data: z.infer<typeof RegisterFormSchema>) => {
     setLoading(true); // set loading to true
-    // console.log(data) // currently it sends data to browser for test
+    console.log(data) // currently it sends data to browser for test
     // TODO: check backend for existing user with email, if new user, send data to backend
     // TODO: if user already exists, show error message and redirect to login
   };

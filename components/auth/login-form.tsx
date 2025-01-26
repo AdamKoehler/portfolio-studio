@@ -11,9 +11,9 @@ import { Input } from '@/components/ui/input'
 import { useFormStatus } from 'react-dom'
 import { useState } from 'react'
 import { OAuthSeparator } from '@/components/auth/seperator'
-import { signIn } from 'next-auth/react'
-import { useRouter } from 'next/router'
-const router = useRouter();
+//import { signIn } from 'next-auth/react'
+//import { useRouter } from 'next/router'
+//const router = useRouter();
 
 
 const LoginForm = () => {
@@ -29,8 +29,8 @@ const LoginForm = () => {
 
   const onSubmit = async(data: z.infer<typeof LoginFormSchema>) => {
     setLoading(true); // set loading to true
-    //console.log(data) // currently it sends data to browser for test
-    
+    console.log(data) // currently it sends data to browser for test
+    /*
     // okay now that we have data, we can send it to backend where next auth can create a session
     try {
       const result = await signIn('credentials', {
@@ -48,6 +48,7 @@ const LoginForm = () => {
     catch (error) {
       console.log(error)
     }
+      */
   };
 const { pending } = useFormStatus();
 
