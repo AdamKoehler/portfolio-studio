@@ -10,13 +10,15 @@ import {Button} from "@/components/ui/button"
 import z from "zod"
 import { useState } from "react"
 import { useFormStatus } from "react-dom"
-import { OAuthSeparator } from "@/components/auth/seperator"
-//import { useRouter } from "next/router";
-//const router = useRouter();
+import {register} from "@/actions/register";
+import { FormSuccess } from "./form-success";
+import { FormError } from "./form-error";
 
 
 const RegisterForm = () => {
   const [loading, setLoading] = useState(false); // starting state is false, changes upon button click
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const form = useForm({
     resolver: zodResolver(RegisterFormSchema),
     defaultValues: {
@@ -27,12 +29,19 @@ const RegisterForm = () => {
     }})
 
   const { pending } = useFormStatus();
-  const onSubmit = (data: z.infer<typeof RegisterFormSchema>) => {
-    setLoading(true); // set loading to true
-    console.log(data) // currently it sends data to browser for test
-    // TODO: check backend for existing user with email, if new user, send data to backend
-    // TODO: if user already exists, show error message and redirect to login
-  };
+  const onSubmit = async (data: z.infer<typeof RegisterFormSchema>) => {
+    setLoading(true)
+    register(data).then((res) => {
+      if (res.error) {
+          setError(res.error)
+          setLoading(false)
+      } 
+      if (res.success) {
+          setSuccess(res.success)
+          setLoading(false)
+      }
+    })
+  }
 
   return (
     <CardWrapper
@@ -108,8 +117,9 @@ const RegisterForm = () => {
             )}
             />
           </div>
+          <FormSuccess message={success} />
+          <FormError message={error} />
           <Button type="submit" className="w-full mt-4" disabled={pending}>{loading ? "Loading..." : "Register"}</Button>
-          <OAuthSeparator/>
         </form>
       </Form>
     </CardWrapper>

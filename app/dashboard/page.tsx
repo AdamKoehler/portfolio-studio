@@ -1,9 +1,10 @@
-import React from 'react'
+"use client"
 
-const userDashboard = () => {
+export default function Dashboard() {
+  
+
   return (
-    <div>userDashboard</div>
+    <div>
+    </div>
   )
-}
-
-export default userDashboard
+};
