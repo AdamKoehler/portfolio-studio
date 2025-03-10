@@ -2,11 +2,11 @@ import React from 'react'
 
 const AuthLayout = ({children} : {children: React.ReactNode}) => {
   return (
-    <section className='w-full h-screen flex items-center justify-center'>
-       <div>
-            {children}
-        </div> 
-    </section>
+    <div className='w-full h-screen flex items-center justify-center'>
+      <section>
+        {children}
+      </section>
+    </div>
     
   )
 }

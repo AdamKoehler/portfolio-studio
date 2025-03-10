@@ -6,7 +6,19 @@ import { Button } from "@/components/ui/button";
 import GithubIcon from "@/components/icons/github-icon";
 import GoogleIcon from "@/components/icons/google-icon";
 
+const domain = "http://localhost:3000";
 export function OAuthSeparator() {
+
+  const handleOAuthLogin = async (provider: string) => {
+
+    const res = await signIn(provider, { callbackUrl: `${domain}/dashboard` });
+
+    if (res?.error) {// error
+      alert("OAuth Login failed. Please try again.");
+      console.log(res.error);
+    }
+
+  };
   return (
     <div>
       <div className="space-y-1">
@@ -17,7 +29,7 @@ export function OAuthSeparator() {
       <Separator className="my-4"/>
       <div className="flex w-full items-center justify-center space-x-4">
         <Button
-          onClick={() => signIn("google")}
+          onClick={() => handleOAuthLogin("google")}
           className="flex items-center justify-center px-4 py-2 bg-white border rounded-lg hover:bg-gray-800"
         >
         <GoogleIcon/>
@@ -26,9 +38,8 @@ export function OAuthSeparator() {
         <Separator orientation="vertical" className="h-10"/>
 
         <Button
-          onClick={() => signIn("github")}
-          className="flex items-center justify-center px-4 py-2 bg-white border rounded-lg hover:bg-gray-800"
-        >
+          onClick={() => handleOAuthLogin("github")}
+          className="flex items-center justify-center px-4 py-2 bg-white border rounded-lg hover:bg-gray-800">
         <GithubIcon/>
         </Button>
       </div>

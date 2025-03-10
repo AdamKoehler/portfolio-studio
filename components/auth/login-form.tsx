@@ -4,21 +4,24 @@ import { LoginFormSchema } from '@/schema'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import CardWrapper from '@/components/auth/card-wrapper'
-import z, { set } from "zod"
+import z from "zod"
 import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../ui/form'
 import { Input } from '@/components/ui/input'
 import { useFormStatus } from 'react-dom'
 import { useState } from 'react'
-import { login } from '@/actions/login'
-import { FormSuccess } from "./form-success";
-import { FormError } from "./form-error";
+import { FormSuccess } from "@/components/auth/form-success";
+import { FormError } from "@/components/auth/form-error";
+import { OAuthSeparator } from '@/components/auth/seperator'
+import { signIn } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
 
 
 export const LoginForm = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const router = useRouter();
   const form = useForm({
     resolver: zodResolver(LoginFormSchema),
     defaultValues: {
@@ -27,22 +30,30 @@ export const LoginForm = () => {
     }
   })
 
-  const onSubmit = async(data: z.infer<typeof LoginFormSchema>) => {
-    setLoading(true); // set loading to true
-    //console.log(data) // send data to browser for test
-    login(data).then((res) => {
-      if (res.error) {
-        console.log(res.error);
-        setLoading(false);
-        setError(res.error);
-      }
-      if (res.success) {
-        console.log(res.success);
-        setLoading(false);
-        //setSuccess(res.success);
-      }
-    })
-  };
+
+  const onSubmit = async (data: z.infer<typeof LoginFormSchema>) => {
+    setLoading(true);
+    setError(""); // Reset error
+    
+    // now we can attempt to sign in the user using next-auth credentials provider
+    const result = await signIn("credentials", {
+      email: data.email,
+      password: data.password,
+      redirect: false
+    });
+
+    if (result?.error) {
+      setError(result.error);
+      setLoading(false);
+    } else {
+      setSuccess("Login successful");
+      setLoading(false);
+      // Redirect to the dashboard
+      router.push("/dashboard");
+    }
+  } 
+  
+ 
 const { pending } = useFormStatus();
 
   return (
@@ -92,6 +103,7 @@ const { pending } = useFormStatus();
           <Button type="submit" className="w-full mt-4" disabled={pending}>
             {loading ? "Loading...":"Login"}
           </Button>
+          <OAuthSeparator/>
         </form>
       </Form>
     </CardWrapper>)

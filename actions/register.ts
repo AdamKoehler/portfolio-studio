@@ -6,7 +6,7 @@ import { RegisterFormSchema } from "@/schema";
 import { database } from "@/lib/database";
 import { hash } from 'bcryptjs';
 import { generateVerificationToken } from "@/lib/token";
-import { sendVerificationEmail } from "@/lib/token";
+import { sendVerificationEmail } from "@/lib/mail";
 
 export const register = async (data: z.infer<typeof RegisterFormSchema>) => {
     try {
@@ -44,12 +44,14 @@ export const register = async (data: z.infer<typeof RegisterFormSchema>) => {
           }
 
 
-        // with no errors occuring we can create the user
+        // with no errors occuring we can create the user (since they are here then provider would be credentials)
         const user = await database.user.create({
             data: {
                 email: email.toLowerCase(),
                 name: name,
-                password: hashedPassword
+                password: hashedPassword,
+                image: "",
+                provider: "credentials",
             }
         });
 

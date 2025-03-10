@@ -13,6 +13,7 @@ import { useFormStatus } from "react-dom"
 import {register} from "@/actions/register";
 import { FormSuccess } from "./form-success";
 import { FormError } from "./form-error";
+import { OAuthSeparator } from "./seperator"
 
 
 const RegisterForm = () => {
@@ -58,7 +59,7 @@ const RegisterForm = () => {
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="flex items-center justify-center">Name</FormLabel>
+                <FormLabel className="flex items-center justify-center">Username</FormLabel>
                 <FormControl>
                   <Input {...field} placeholder="Required"
                   className={`formInput w-full border text-center
@@ -120,6 +121,7 @@ const RegisterForm = () => {
           <FormSuccess message={success} />
           <FormError message={error} />
           <Button type="submit" className="w-full mt-4" disabled={pending}>{loading ? "Loading..." : "Register"}</Button>
+          <OAuthSeparator/>
         </form>
       </Form>
     </CardWrapper>

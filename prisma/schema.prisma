@@ -14,21 +14,51 @@ datasource db {
 }
 
 // our first model that we want to add to mongodb will be our user
-// user contains id, name, email, and password. additionally I will add emailVerified date/time so that sessions can expire (optional in case user selects google or githuub to sign in).
+// basic user info contains id, name, email, and password. additionally I will add emailVerified date/time as optional because initially the user wont be verified so this is fulfilled later.
+// then we relate the user as the owner to their stored projects and portfolio
 model User {
-  id           String   @id @default(auto()) @map("_id") @db.ObjectId // mongodb decorator for id
-  name         String
-  email        String   @unique
-  password     String
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  email         String    @unique
+  password      String
   emailVerified DateTime?
+  image         String?
+  provider      String?  // credentials, google, or github
+
+  // One-to-Many Relationship (A user can own multiple projects)
+  projects Project[]
+
+  // One-to-One Relationship (A user can have one portfolio, and a portfolio belongs to one user)
+  portfolio Portfolio?
 }
 
 model VerificationToken {
-  id String @id @default(auto()) @map("_id") @db.ObjectId
-  email String
-  token String
+  id      String   @id @default(auto()) @map("_id") @db.ObjectId
+  email   String
+  token   String
   // @ts-ignore
   expires DateTime
 
   @@unique([email, token])
+}
+
+model Project {
+  id          String     @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  description String?
+  url         String
+  ownerId     String?     @db.ObjectId // You can leave the ownerId as ObjectId if it's referencing a User.
+  owner       User       @relation(fields: [ownerId], references: [id])
+  portfolioId String?    @db.ObjectId
+  portfolio   Portfolio? @relation(fields: [portfolioId], references: [id])
+}
+
+model Portfolio {
+  id      String @id @default(auto()) @map("_id") @db.ObjectId
+  ownerId String @unique @db.ObjectId // Reference to User
+
+  // Relations
+  //one-to-one
+  owner    User      @relation(fields: [ownerId], references: [id])
+  projects Project[] // A portfolio contains multiple projects
 }

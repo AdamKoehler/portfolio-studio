@@ -35,7 +35,3 @@ export const generateVerificationToken = async (email: string) => {
 
     return verificationToken;
 }
-
-export const sendVerificationEmail = async (email: string, token: string) => {
-    
-}

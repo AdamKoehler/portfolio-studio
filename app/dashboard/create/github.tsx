@@ -2,21 +2,13 @@ import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Toggle } from "@/components/ui/toggle";
+import { Card, CardContent } from "@/components/ui/card";
 
 export default function GitHub() {
   const [username, setUsername] = useState("");
   const [repositories, setRepositories] = useState([]);
   const [selectedRepos, setSelectedRepos] = useState<Set<number>>(new Set());
-
-  const fetchRepositories = async () => {
-    try {
-      const response = await fetch(`https://api.github.com/users/${username}/repos`);
-      const data = await response.json();
-      setRepositories(data);
-    } catch (error) {
-      console.error("Error fetching repositories:", error);
-    }
-  };
+  
 
   const toggleRepoSelection = (repoId: number) => {
     setSelectedRepos((prevSelected) => {
@@ -30,15 +22,46 @@ export default function GitHub() {
     });
   };
 
-  const handleImport = async () => {
-    // console.log(Array.from(selectedRepos));
-    // we have selected repos at this stage so we can close the entire component and move on to the next step
-    // ill save the repo ids to the database and render step 2 here (theme selection)
+const fetchRepositories = async () => {
+    try {
+      const response = await fetch(`https://api.github.com/users/${username}/repos`);
+      //console.log("Rate Limit Remaining:", response.headers.get("X-RateLimit-Remaining"));
+      const data = await response.json();
+      setRepositories(data);
+    } catch (error) {
+      console.error("Error fetching repositories:", error);
+    }
   };
 
+  const handleImport = async () => {
+    const selectedRepoIds = Array.from(selectedRepos);
+  
+    try {
+      const response = await fetch("/api/import-repos", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          repositories: selectedRepoIds,
+        }),
+      });
+  
+      if (!response.ok) {
+        console.error("Failed to import repositories:", response.status, response.statusText);
+        return;
+      }
+  
+      const data = await response.json();
+      alert(`${data.imported} repositories imported successfully.`);
+    } catch (error) {
+      alert(`Error importing repositories: ${error}`);
+    }
+  };
   return (
-    <div className="flex flex-col items-center justify-center h-screen p-4">
-      <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full text-center">
+    <Card className="max-w-md mx-auto mt-10 p-6 shadow-lg">
+        <CardContent>
+        <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full text-center">
         <h2 className="text-2xl font-semibold mb-4">Get GitHub Repositories</h2>
         <Input
           type="text"
@@ -64,13 +87,14 @@ export default function GitHub() {
               </li>
             ))}
             <li>
-              <Button className="w-full py-2 mt-3" onClick={handleImport}>
+              <Button className="w-full py-2 mt-3" onClick={handleImport}> {/*this sends the selected repos to the backend as an array of repoIDs*/}
                 Import
               </Button>
             </li>
           </ul>
         )}
       </div>
-    </div>
+    </CardContent>
+    </Card>
   );
 }
