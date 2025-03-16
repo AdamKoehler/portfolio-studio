@@ -16,7 +16,7 @@ export async function POST(req: Request) {
 
     //Get the current user session to access userID
     const session = await getServerSession(authOptions) as { user: { email: string } };
-    console.log("Session:", session);
+    //console.log("Session:", session);
     const userID = await getUserByEmail(session.user.email);
 
     

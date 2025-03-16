@@ -4,7 +4,7 @@ import { Canvas } from "@react-three/fiber";
 import { useRef, useState } from "react";
 import { OrbitControls } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
-
+import { Canvas } from "@react-three/fiber";
 const themes = [
   { id: "theme1", color: "red" },
   { id: "theme2", color: "blue" },

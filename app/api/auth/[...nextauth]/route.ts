@@ -84,17 +84,22 @@ export const authOptions = NextAuth({
         console.error("Error creating user in database:", error);
         return false;
         }
+      } else { // if the user does exist in the database then this will ensure the user id is populated
+      user.id = existingUser.id;
       }
       return true;
       },
       async jwt({ token, user }) {
         if (user) {
-          token.id = user.id;
-          token.name = user.name;
-          token.email = user.email;
-          token.image = user.image;
+          const dbUser = await prisma.user.findUnique({ where: { email: user.email as string } });
+          if (dbUser) {
+            token.id = dbUser.id; // Ensure correct ID is stored in the token
+            token.name = dbUser.name;
+            token.email = dbUser.email;
+            token.image = dbUser.image;
+            token.provider = dbUser.provider;
+          }
         }
-        //console.log("JWT Token:", token);
         return token;
       },
       async session({ session, token }) {

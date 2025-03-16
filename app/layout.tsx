@@ -18,7 +18,7 @@ export default function RootLayout({
       <body>
         <SessionProviderWrapper session={session}>
           <AuthWrapper>{children}</AuthWrapper>
-          <NavWrapper /> {/* Render NavBar conditionally from the client */}
+          <NavWrapper /> {/* this is rendered conditionally so that landing page doesnt see navbar*/}
         </SessionProviderWrapper>
       </body>
     </html>

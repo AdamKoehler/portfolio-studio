@@ -1,15 +1,11 @@
 "use client"
 
 import Link from "next/link"
-import {
-  NavigationMenu,
-  NavigationMenuItem,
-  NavigationMenuList,
-} from "@/components/ui/navigation-menu"
+import { signOut } from "next-auth/react";
+import { NavigationMenu,NavigationMenuItem, NavigationMenuList,} from "@/components/ui/navigation-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar"
 import defaultProfileImage from '@/public/default-profile.jpg';
 import { useSession } from "next-auth/react";
-import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,10 +20,13 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { useRouter } from "next/navigation";
 
 export default function NavBar() {
-  const session = useSession();
+  const {data: session} = useSession();
+  const router = useRouter();
   return (
+    <div>
     <NavigationMenu className="fixed top-0 left-1/2 transform -translate-x-1/2 z-50 bg-background px-4 py-2 rounded-md shadow-md flex items-center justify-center gap-16">
       <NavigationMenuList className="flex gap-16">
         <NavigationMenuItem>
@@ -46,14 +45,19 @@ export default function NavBar() {
           <DropdownMenuTrigger>
             <div className="w-8 h-8">
               <Avatar className="w-8 h-8">
-                <AvatarImage src={session.data?.user?.image || defaultProfileImage.src} />
-                <AvatarFallback>{session.data?.user?.name?.charAt(0)}</AvatarFallback>
+                <AvatarImage src={session?.user.image ?? defaultProfileImage.src}/>
+                <AvatarFallback>{defaultProfileImage.src}</AvatarFallback>
               </Avatar>
             </div>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-56">
             <DropdownMenuLabel>My Account</DropdownMenuLabel>
             <DropdownMenuSeparator />
+            <DropdownMenuGroup>
+              <DropdownMenuItem onClick= {() => {router.push("/dashboard")}}>
+                Dashboard
+              </DropdownMenuItem>
+              </DropdownMenuGroup>
             <DropdownMenuGroup>
               <DropdownMenuItem>
                 Change Image
@@ -66,9 +70,10 @@ export default function NavBar() {
             </DropdownMenuGroup>
           </DropdownMenuContent>
         </DropdownMenu>
-        <span>{session?.data?.user?.name}</span>
+        <span>{session?.user.name}</span>
       </div>
     </NavigationMenu>
+    </div>
 
   )
 }
