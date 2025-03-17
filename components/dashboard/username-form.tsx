@@ -41,7 +41,6 @@ export function HostPortfolioForm() {
 
     if (res.ok) {
       const data = await res.json();
-      alert("Portfolio hosted successfully!");
       router.push(`/${data.username}`); // Redirects to hosted portfolio
     } else {
       const errorData = await res.json();
@@ -60,7 +59,15 @@ export function HostPortfolioForm() {
         type="text"
         value={username}
         onChange={(e) => setUsername(e.target.value)}
-        placeholder="example-username"
+        placeholder={
+          session?.user.name
+            ?.toLowerCase()
+            .replace(/ /g, "_")
+            .replace(/[^a-z0-9_]/g, "")
+            .replace(/_{2,}/g, "_")
+            .replace(/_$/, "")
+            .replace(/^_/, "") || "URL_SAFE_USERNAME"
+        }
         required
       />
 

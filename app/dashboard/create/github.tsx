@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Toggle } from "@/components/ui/toggle";
 import { Card, CardContent } from "@/components/ui/card";
+import { SonnerAlert } from "@/components/sonner-alert/sonner";
 
 export default function GitHub() {
   const [username, setUsername] = useState("");
@@ -48,14 +49,14 @@ const fetchRepositories = async () => {
       });
   
       if (!response.ok) {
-        console.error("Failed to import repositories:", response.status, response.statusText);
+        console.error("Failed to import repositories:");
         return;
       }
   
       const data = await response.json();
-      alert(`${data.imported} repositories imported successfully.`);
+      SonnerAlert(`Successfully imported ${data.length.toLocaleString()} repositories`, "success");
     } catch (error) {
-      alert(`Error importing repositories: ${error}`);
+      SonnerAlert(`Error importing repositories: ${console.log(error)}`, "error");
     }
   };
   return (

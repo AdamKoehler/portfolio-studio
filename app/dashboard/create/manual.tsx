@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
-import { title } from "process";
+import { SonnerAlert } from "@/components/sonner-alert/sonner";
+
 
 export default function Local() {
   return (
@@ -34,7 +35,7 @@ const LocalForm: React.FC = () => { // local form component with default values
     formData.preventDefault();
     const form = formData.target as HTMLFormElement;
     const data = {
-      Title: form.title.value,
+      Title: form.title,
       Description: form.description.value,
       URL: form.url.value,
     };
@@ -52,9 +53,9 @@ const LocalForm: React.FC = () => { // local form component with default values
         return;
       }
   
-      alert("Project created successfully.");
+      SonnerAlert("Project created successfully.", "success");
     } catch (error) {
-      alert(`Error creating project: ${error}`);
+      SonnerAlert(`Error creating project: ${error}`, "error");
     }
   };
 

@@ -10,6 +10,7 @@ import { Separator } from "@/components/ui/separator";
 import { Label } from "@/components/ui/label";
 import { useRouter } from "next/navigation";
 import { HostPortfolioForm } from "@/components/dashboard/username-form";
+import { SonnerAlert } from "@/components/sonner-alert/sonner";
 
 export type ProjectType = {
   id: string;
@@ -29,7 +30,7 @@ export default function EditPortfolio() {
   const router = useRouter();
 
   if (!session) {
-    router.push("/"); // ensures users are logged in
+    router.push("/"); // if user isnt logged in redirect to landing page
   }
   const userId = session?.user.id as string;
   const [formData, setFormData] = useState<PortfolioType>({
@@ -39,7 +40,11 @@ export default function EditPortfolio() {
     projects: [], // these start empty upon render and are populated once fetch is successful
   });
   
-  
+  const [hasSaved, setHasSaved] = useState(false); // we are going to assume the user hasnt saved yet before clicking host 
+  const [hasProjects, setHasProjects] = useState(false);
+  // we also assume the userhas no projects, so this means user can host or save portfolio in our update tab unless theyve visited the create tab
+  // this is just done by disabling the buttons
+  const [hasChanged, setHasChanged] = useState(false);
   
   useEffect(() => {
     if (!userId) return;
@@ -49,8 +54,6 @@ export default function EditPortfolio() {
         const responseData = await res.json();
     
         if (!responseData.success || !responseData.portfolio) {
-          console.error("Invalid portfolio data received:", responseData);
-          router.push("/dashboard/create");
           return;
         }
     
@@ -58,8 +61,11 @@ export default function EditPortfolio() {
     
         if (!portfolioData.projects) {
           portfolioData.projects = []; // Ensure projects array is always present
-        }
-    
+          setHasProjects(false);  // No projects
+          return;
+      } else {
+        setHasProjects(true);  // Projects exist
+      }
         setFormData(portfolioData);
       } catch (error) {
         console.error("Failed to fetch portfolio:", error);
@@ -71,6 +77,7 @@ export default function EditPortfolio() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     if (!formData) return;
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    setHasChanged(true);
   };
 
   const handleProjectChange = (index: number, key: keyof ProjectType, value: string) => {
@@ -94,17 +101,15 @@ export default function EditPortfolio() {
     });
 
     if (res.ok) {
-      alert("Portfolio updated successfully!");
+      setHasChanged(false);
+      setHasSaved(true);
     } else {
-      alert("Error updating portfolio.");
+      SonnerAlert("Error updating portfolio." + res.statusText, "error");
     }
-    router.push("/dashboard");
   };
 
-  if (!formData) return <p>Loading...</p>;
-
   return (
-    <div className="w-screen pb-20 pt-20 bg-gradient-to-br from-[#90bdf1] via-[#57be79] to-[#faa8a8]" style={{ height: '120vh', width: '100vw' }}>
+    <div className=" pt-20 pb-10 min-h-screen w-full bg-gradient-to-br from-[#90bdf1] via-[#57be79] to-[#faa8a8]">
     <div className="p-4 max-w-4xl mx-auto shadow-md border rounded-lg bg-white">
       <h1 className="text-3xl font-bold mb-6">Edit Portfolio</h1>
       <div className="space-y-6">
@@ -159,9 +164,10 @@ export default function EditPortfolio() {
       )}
       </div>
       <p>Note: You can change user image by clicking on user icon</p>
-      <Button onClick={handleSave} className="mt-6 w-full">Save Changes</Button>
-    </div>
-    <HostPortfolioForm /> {/* This component displays the username form and upon submission calls the api to create a new page for the user*/}
+      <Button onClick={handleSave} className="mt-6 w-full" disabled={!(hasProjects && hasChanged)}>Save Changes</Button>
+      {hasSaved && <HostPortfolioForm/> } {/* This component displays the username form and upon submission calls the api to create a new page for the user*/}
+      </div>
+      
     </div>
   );
 }

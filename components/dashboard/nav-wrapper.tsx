@@ -1,5 +1,5 @@
 "use client";
-
+//this file just controls the visibility of the navbar
 import { usePathname } from "next/navigation";
 import NavBar from "@/components/dashboard/nav-bar";
 

@@ -1,6 +1,5 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import { ProjectType } from "@/app/dashboard/update/page";
 
 
 type Params = {
