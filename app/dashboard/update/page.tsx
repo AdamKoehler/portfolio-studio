@@ -11,11 +11,14 @@ import { Label } from "@/components/ui/label";
 import { useRouter } from "next/navigation";
 import { HostPortfolioForm } from "@/components/dashboard/username-form";
 import { SonnerAlert } from "@/components/sonner-alert/sonner";
+import { UploadProjectImage } from "@/app/dashboard/update/Project-Images";
 
 export type ProjectType = {
   id: string;
   title: string;
   description: string;
+  url: string;
+  image: string;
 };
 
 type PortfolioType = {
@@ -80,7 +83,7 @@ export default function EditPortfolio() {
     setHasChanged(true);
   };
 
-  const handleProjectChange = (index: number, key: keyof ProjectType, value: string) => {
+  const handleProjectChange = (index: number, key: string, value: string) => {
     if (!formData) return;
     setFormData((prev) => {
       if (!prev){
@@ -91,6 +94,23 @@ export default function EditPortfolio() {
       return { ...prev, projects: updatedProjects };
     });
   };
+
+  async function deleteProject(projectId: string) {
+    if (!formData) return;
+    try {
+    const response = await fetch (`/api/delete-project?userId=${userId}&projectId=${projectId}`, {
+      method: "DELETE",
+    });
+    if (response.ok || response.status === 200) {
+      const updatedProjects = formData.projects.filter((project) => project.id !== projectId);
+      setFormData({ ...formData, projects: updatedProjects });
+      SonnerAlert("Project deleted successfully.", "success");
+    }
+  } catch (error) {
+    console.error("Error deleting project:", error);
+    SonnerAlert("Error deleting project.", "error");
+  }
+}
 
   const handleSave = async () => {
     if (!formData) return;
@@ -109,7 +129,7 @@ export default function EditPortfolio() {
   };
 
   return (
-    <div className=" pt-20 pb-10 min-h-screen w-full bg-gradient-to-br from-[#90bdf1] via-[#57be79] to-[#faa8a8]">
+    <div className="pt-20 pb-10 min-h-screen w-full bg-gradient-to-br from-[#90bdf1] via-[#57be79] to-[#faa8a8]">
     <div className="p-4 max-w-4xl mx-auto shadow-md border rounded-lg bg-white">
       <h1 className="text-3xl font-bold mb-6">Edit Portfolio</h1>
       <div className="space-y-6">
@@ -156,6 +176,19 @@ export default function EditPortfolio() {
                   onChange={(e) => handleProjectChange(index, "description", e.target.value)}
                 />
               </div>
+              <div>
+                <Label className="block font-medium mb-2">Project URL:</Label>
+                <Input
+                  type="text"
+                  value={project.url}
+                  onChange={(e) => handleProjectChange(index, "url", e.target.value)}
+                />
+              </div>
+              <div>
+                <Label className="block font-medium mb-2">Project Image:</Label>
+                <UploadProjectImage projectOwner={userId} projectID={project.id} /> {/* this will display the UI, save image to cloudinary and update the image url in the database */}
+              </div>
+              <Button variant={"destructive"} onClick={() => deleteProject(project.id)}>Remove Project</Button>
             </CardContent>
           </Card>
           ))

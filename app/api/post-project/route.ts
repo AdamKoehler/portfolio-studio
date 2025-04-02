@@ -7,7 +7,7 @@ import { getUserByEmail } from "@/data/user";
 const prisma = new PrismaClient();
 
 export async function POST(req: Request) {
-    console.log("POST request received");
+    //console.log("POST request received");
 
     try {
         const session = await getServerSession(authOptions) as { user: { email: string } };

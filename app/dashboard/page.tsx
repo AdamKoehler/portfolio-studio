@@ -1,19 +1,25 @@
 "use client";
 
 import { Card } from '@/components/ui/card';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import defaultProfileImage from '@/public/default-profile.jpg';
 import ClientDashboard from '@/components/dashboard/client-dashboard'; // Client Component
 import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 const Dashboard =  () => {
-  function returnUserSession(){
-    const session = useSession();
-    const user = session?.data?.user;
-    return user;
-  }
+function returnUserSession(){
+  const session = useSession();
+  const user = session?.data?.user;
+  return user;
+}
 
-  const user = returnUserSession();
+const router = useRouter();
+
+useEffect(() => {
+  router.refresh();
+}, []);
+
+const user = returnUserSession();
   return (
     <div className="flex justify-center  items-center min-h-screen bg-gray-200">
       <Card className="w-full max-w-3xl p-8 bg-white rounded-lg shadow-md hover:shadow-lg transition duration-300 md:max-w-md sm:max-w-sm xs:max-w-xs">

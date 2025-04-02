@@ -47,12 +47,14 @@ export default function CreatePage() {
       if (data.error) {
         SonnerAlert("Error creating portfolio" + response.toString(), "error");
       } else {
-        return SonnerAlert("Your portfolio has been saved successfully!", "success");
+        SonnerAlert("Your portfolio has been saved successfully!", "success");
+        
+        router.push("/dashboard/update");
         // on success of portfolio document creation users will be redirected to preview(update) before hosting
-        //router.push("/dashboard/update"); 
+         
       }
     } catch (error) {
-      console.log("Error creating portfolio:", error);
+      SonnerAlert("Error creating portfolio: " + error, "error");
     }
   }
 

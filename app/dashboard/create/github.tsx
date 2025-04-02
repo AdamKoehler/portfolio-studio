@@ -49,14 +49,14 @@ const fetchRepositories = async () => {
       });
   
       if (!response.ok) {
-        console.error("Failed to import repositories:");
+        SonnerAlert(`Error importing repositories, response: ${response.status}`, "error");
         return;
       }
   
       const data = await response.json();
-      SonnerAlert(`Successfully imported ${data.length.toLocaleString()} repositories`, "success");
+      SonnerAlert(`Repositories imported successfully.`, "success");
     } catch (error) {
-      SonnerAlert(`Error importing repositories: ${console.log(error)}`, "error");
+      SonnerAlert(`${error}`, "error");
     }
   };
   return (

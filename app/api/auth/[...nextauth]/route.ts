@@ -98,6 +98,7 @@ export const authOptions = NextAuth({
             token.email = dbUser.email;
             token.image = dbUser.image;
             token.provider = dbUser.provider;
+            token.emailVerified = dbUser.emailVerified;
           }
         }
         return token;

@@ -46,6 +46,7 @@ model Project {
   id          String     @id @default(auto()) @map("_id") @db.ObjectId
   title       String
   description String?
+  imageURL    String?
   url         String
   ownerId     String     @db.ObjectId
   owner       User       @relation(fields: [ownerId], references: [id])
