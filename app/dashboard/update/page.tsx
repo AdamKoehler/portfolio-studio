@@ -16,9 +16,9 @@ import { UploadProjectImage } from "@/app/dashboard/update/Project-Images";
 export type ProjectType = {
   id: string;
   title: string;
-  description: string;
+  description: string | null;
   url: string;
-  image: string;
+  imageURL: string | null;
 };
 
 type PortfolioType = {
@@ -172,7 +172,7 @@ export default function EditPortfolio() {
               <div>
                 <Label className="block font-medium mb-2">Project Description:</Label>
                 <Textarea
-                  value={project.description}
+                  value={project.description ?? ""}
                   onChange={(e) => handleProjectChange(index, "description", e.target.value)}
                 />
               </div>
