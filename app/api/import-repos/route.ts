@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { database } from "@/lib/database";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 import { getUserByEmail } from "@/data/user";
 const key = process.env.GITHUB_API_KEY;
 
