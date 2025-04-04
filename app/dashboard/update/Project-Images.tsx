@@ -9,7 +9,7 @@ export const UploadProjectImage = ({ projectOwner, projectID }: { projectOwner: 
   return (
     <CldUploadWidget
         uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_PROJECT_UPLOAD_PRESET}
-        options={{ cloudName: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME }}
+        options={{ cloudName: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME, folder: 'projects'}}
         onSuccess={async (result) => {
         try {
             if (!result.info) {

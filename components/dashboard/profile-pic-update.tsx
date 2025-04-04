@@ -11,7 +11,7 @@ export const UploadProfileImage = ({ profileOwner }: { profileOwner: string}) =>
   return (
     <CldUploadWidget
         uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_PROFILE_UPLOAD_PRESET}
-        options={{ cloudName: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME }}
+        options={{ cloudName: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME, folder: 'profiles'}}
         onSuccess={async (result) => {
         try {
             if (!result.info) {

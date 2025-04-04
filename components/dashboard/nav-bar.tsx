@@ -73,7 +73,7 @@ export default function NavBar() {
                 </DropdownMenuItem>
               </DropdownMenuGroup>
               <DropdownMenuGroup>  
-                <DropdownMenuItem onClick={() => signOut({ callbackUrl: 'http://localhost:3000/' })} className="text-red-600">
+                <DropdownMenuItem onClick={() => signOut({ callbackUrl: process.env.NEXTAUTH_URL })} className="text-red-600">
                   Sign out
                 </DropdownMenuItem>
               </DropdownMenuGroup>
