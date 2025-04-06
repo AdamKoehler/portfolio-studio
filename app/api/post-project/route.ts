@@ -1,24 +1,14 @@
 import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
+import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import { getUserByEmail } from "@/data/user";
-
 const prisma = new PrismaClient();
 
 export async function POST(req: Request) {
-    //console.log("POST request received");
-
     try {
-        const session = await getServerSession(authOptions) as { user: { email: string } };
-        if (!session || !session.user.email) {
-            return NextResponse.json({ error: "User not authenticated" }, { status: 401 });
-        }
-
-        const userID = await getUserByEmail(session.user.email);
-        if (!userID) {
-            return NextResponse.json({ error: "User not found" }, { status: 404 });
-        }
+        const session = await getServerSession(authOptions) as { user: { email: string } };  
+        const userId = await getUserByEmail(session.user.email);
 
         const { project } = await req.json();
         console.log("Received project:", project);
@@ -38,11 +28,11 @@ export async function POST(req: Request) {
                 title: Title,
                 description: Description,
                 url: URL,
-                owner: { connect: { id: userID } },
+                owner: { connect: { id: userId as string } },
             }
         });
 
-        return NextResponse.json({ message: "Project created successfully", project: createdProject }, { status: 201 });
+        return NextResponse.json({ message: "Project created successfully", project: createdProject }, { status: 200 });
 
     } catch (error) {
         console.error("Error creating project:", error);

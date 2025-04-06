@@ -54,6 +54,11 @@ const fetchRepositories = async () => {
       }
   
       const data = await response.json();
+  
+      if (data.error) {
+        SonnerAlert(`Error importing repositories: ${data.error}`, "error");
+        return;
+      }
       SonnerAlert(`Repositories imported successfully.`, "success");
     } catch (error) {
       SonnerAlert(`${error}`, "error");

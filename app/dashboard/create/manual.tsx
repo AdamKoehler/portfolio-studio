@@ -5,9 +5,11 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
 import { SonnerAlert } from "@/components/sonner-alert/sonner";
+import { useSession } from "next-auth/react"; 
 
 
 export default function Local() {
+
   return (
     <Card className="max-w-md mx-auto mt-10 p-6 shadow-lg">
       <CardContent>
@@ -19,6 +21,8 @@ export default function Local() {
 }
 
 const LocalForm: React.FC = () => { // local form component with default values
+  const { data: session } = useSession();
+  const userId = session?.user.id as string;
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -31,31 +35,33 @@ const LocalForm: React.FC = () => { // local form component with default values
     setFormData({ ...formData, [name]: value });
   };
 
-  const submit = async (formData: React.FormEvent <HTMLFormElement>) => {
-    formData.preventDefault();
-    const form = formData.target as HTMLFormElement;
-    const data = {
-      Title: form.title,
-      Description: form.description.value,
-      URL: form.url.value,
-    };
+  const submit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault(); // Prevent default form submission
+    
     try {
       const response = await fetch("/api/post-project", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ project: data }),
+        body: JSON.stringify({ 
+          project: {
+            Title: formData.title,
+            Description: formData.description,
+            URL: formData.url
+          } 
+        }),
       });
   
       if (!response.ok) {
-        console.error("Failed to create project:", response.status, response.statusText);
+        SonnerAlert("Failed to create project:", "error");
+        console.error("Failed to create project:", response.statusText);
         return;
       }
   
       SonnerAlert("Project created successfully.", "success");
     } catch (error) {
-      SonnerAlert(`Error creating project: ${error}`, "error");
+      SonnerAlert("Error creating project", "error");
     }
   };
 
