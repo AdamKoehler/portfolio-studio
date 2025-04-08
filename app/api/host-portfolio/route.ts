@@ -10,6 +10,15 @@ export async function POST(req: NextRequest) {
   }
 
   try {
+    // Check if username is already taken
+    const existingPortfolio = await prisma.portfolio.findFirst({
+      where: { ownerUsername: username },
+    });
+
+    if (existingPortfolio) {
+      return NextResponse.json({ message: "Username is already taken" }, { status: 409 });
+    }
+
     // Ensure portfolio exists
     const portfolio = await prisma.portfolio.findUnique({
       where: { ownerId: userId },

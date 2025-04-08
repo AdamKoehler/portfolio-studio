@@ -43,3 +43,10 @@ export const GetUserID = async () => {
         return null;
     }
 }
+
+export const getUserByUsername = async (providedUsername: string): Promise<string | null> => {
+    // first we look for the portfolio by username
+    const portfolio = database.portfolio.findUnique({ where: { ownerUsername: providedUsername } });
+    // then we return the owner id
+    return portfolio.then((portfolio) => portfolio?.ownerId ?? null);
+}

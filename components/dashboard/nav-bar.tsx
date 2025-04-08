@@ -63,9 +63,12 @@ export default function NavBar() {
         <div className="flex items-center gap-3">
           <DropdownMenu>
             <DropdownMenuTrigger>
-              <div className="w-10 h-10 border-2 border-black rounded-full overflow-hidden">
-                <Avatar key={avatarKey}>
-                  <AvatarImage src={session?.user.image || defaultProfileImage.src} />
+              <div className="w-10 h-10 border-2 border-black rounded-full overflow-hidden flex items-center justify-center">
+                <Avatar key={avatarKey} className="w-full h-full">
+                  <AvatarImage 
+                    src={session?.user.image || defaultProfileImage.src} 
+                    className="object-cover w-full h-full" 
+                  />
                   <AvatarFallback>{session?.user?.name?.charAt(0)}</AvatarFallback>
                 </Avatar>
               </div>
@@ -111,9 +114,12 @@ export default function NavBar() {
             <div className="flex items-center gap-3 w-40 justify-end">
               <DropdownMenu>
                 <DropdownMenuTrigger>
-                  <div className="w-10 h-10 border-2 border-black rounded-full overflow-hidden">
-                    <Avatar key={avatarKey}>
-                      <AvatarImage src={session?.user.image || defaultProfileImage.src} />
+                  <div className="w-10 h-10 border-2 border-black rounded-full overflow-hidden flex items-center justify-center">
+                    <Avatar key={avatarKey} className="w-full h-full">
+                      <AvatarImage 
+                        src={session?.user.image || defaultProfileImage.src} 
+                        className="object-cover w-full h-full" 
+                      />
                       <AvatarFallback>{session?.user?.name?.charAt(0)}</AvatarFallback>
                     </Avatar>
                   </div>
@@ -127,7 +133,7 @@ export default function NavBar() {
                     </DropdownMenuItem>
                   </DropdownMenuGroup>
                   <DropdownMenuGroup>  
-                    <DropdownMenuItem onClick={() => signOut({ callbackUrl: 'http://localhost:3000/' })} className="text-red-600">
+                    <DropdownMenuItem onClick={() => signOut({ callbackUrl: process.env.NEXTAUTH_URL })} className="text-red-600">
                       Sign out
                     </DropdownMenuItem>
                   </DropdownMenuGroup>

@@ -6,13 +6,13 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { usernameSchema } from "@/schema";
+import { SonnerAlert } from "@/components/sonner-alert/sonner";
 
 export function HostPortfolioForm() {
   const { data: session } = useSession();
   const router = useRouter();
 
   const [username, setUsername] = useState("");
-  const [error, setError] = useState("");
 
   if (!session) {
     router.push("/"); // Redirects if user is not logged in
@@ -27,11 +27,9 @@ export function HostPortfolioForm() {
     const validationResult = usernameSchema.safeParse({ username });
 
     if (!validationResult.success) {
-      setError(validationResult.error.errors[0].message);
+      SonnerAlert(validationResult.error.errors[0].message, "error");
       return;
     }
-
-    setError(""); // Clear previous errors
 
     const res = await fetch(`/api/host-portfolio`, {
       method: "POST",
@@ -41,18 +39,21 @@ export function HostPortfolioForm() {
 
     if (res.ok) {
       const data = await res.json();
+      SonnerAlert("Portfolio hosted successfully!", "success");
       router.push(`/${data.username}`); // Redirects to hosted portfolio
     } else {
       const errorData = await res.json();
-      setError(errorData.message || "Error hosting portfolio.");
+      if (res.status === 409) {
+        SonnerAlert("This username is already taken. Please choose another one.", "error");
+      } else {
+        SonnerAlert(errorData.message || "Error hosting portfolio.", "error");
+      }
     }
   };
 
   return (
     <form onSubmit={handleHost} className="max-w-lg mx-auto mt-10 p-6 shadow-md bg-white border rounded-lg">
       <h1 className="text-2xl font-bold mb-4">Host Your Portfolio</h1>
-
-      {error && <p className="text-red-500 mb-2">{error}</p>}
 
       <label className="block font-medium mb-2 text-center">Choose a url safe Username:</label>
       <Input className="text-center"

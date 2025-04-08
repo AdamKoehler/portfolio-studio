@@ -10,11 +10,14 @@ import { ProjectType } from '@/app/dashboard/update/page'
 type Project = ProjectType
 
 type Portfolio = {
-  aboutMe: string
+  aboutMe: string | null
   theme: string
-  github: string
-  linkedin: string
+  github: string | null
+  linkedin: string | null
   projects: Project[]
+  owner: {
+    image: string | null
+  }
 }
 
 type Props = {

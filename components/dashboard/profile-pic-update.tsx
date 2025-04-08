@@ -2,15 +2,12 @@
 import { Button } from "@/components/ui/button";
 import { CldUploadWidget } from "next-cloudinary";
 import { SonnerAlert } from "@/components/sonner-alert/sonner";
-import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
+import { useEffect} from "react";
 
 export const UploadProfileImage = ({ profileOwner }: { profileOwner: string}) => {
     const userId = profileOwner;
-    const router = useRouter();
     const { data: session, update } = useSession();
-    const [imageKey, setImageKey] = useState(0);
 
     // Debug the session update
     useEffect(() => {
@@ -20,7 +17,16 @@ export const UploadProfileImage = ({ profileOwner }: { profileOwner: string}) =>
   return (
     <CldUploadWidget
         uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_PROFILE_UPLOAD_PRESET}
-        options={{ cloudName: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME, folder: 'profiles'}}
+        options={{
+            cloudName: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
+            folder: 'profiles',
+            cropping: true,
+            croppingAspectRatio: 1,
+            croppingShowDimensions: true,
+            croppingCoordinatesMode: 'custom',
+            croppingDefaultSelectionRatio: 1,
+            showSkipCropButton: false
+        }}
         onSuccess={async (result) => {
         try {
             if (!result.info) {
