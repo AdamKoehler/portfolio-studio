@@ -16,14 +16,20 @@ import {
 import { usePathname } from "next/navigation"
 import { signOut } from "next-auth/react"
 import { useRouter } from "next/navigation"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Menu, X } from "lucide-react"
 
 export default function NavBar() {
   const router = useRouter();
-  const { data: session, status } = useSession();
+  const { data: session, status, update } = useSession();
   const currentPath = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [avatarKey, setAvatarKey] = useState(0);
+  
+  // Listen for session updates
+  useEffect(() => {
+    setAvatarKey(prev => prev + 1);
+  }, [session?.user?.image]);
   
   if (status === "loading" || !session?.user?.id) {
     return <div>Loading...</div>;
@@ -58,7 +64,7 @@ export default function NavBar() {
           <DropdownMenu>
             <DropdownMenuTrigger>
               <div className="w-10 h-10 border-2 border-black rounded-full overflow-hidden">
-                <Avatar>
+                <Avatar key={avatarKey}>
                   <AvatarImage src={session?.user.image || defaultProfileImage.src} />
                   <AvatarFallback>{session?.user?.name?.charAt(0)}</AvatarFallback>
                 </Avatar>
@@ -106,7 +112,7 @@ export default function NavBar() {
               <DropdownMenu>
                 <DropdownMenuTrigger>
                   <div className="w-10 h-10 border-2 border-black rounded-full overflow-hidden">
-                    <Avatar>
+                    <Avatar key={avatarKey}>
                       <AvatarImage src={session?.user.image || defaultProfileImage.src} />
                       <AvatarFallback>{session?.user?.name?.charAt(0)}</AvatarFallback>
                     </Avatar>

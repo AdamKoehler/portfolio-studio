@@ -45,7 +45,12 @@ export const authOptions: NextAuthOptions = {
             throw new Error("Invalid password");
           }
 
-          return { id: user.id.toString(), name: user.name, email: user.email };
+          return { 
+            id: user.id.toString(), 
+            name: user.name, 
+            email: user.email, 
+            image: user.image || undefined 
+          };
         },
       }),
     ],
@@ -80,7 +85,7 @@ export const authOptions: NextAuthOptions = {
         }
         return true;
       },
-      async jwt({ token, user }) {
+      async jwt({ token, user, trigger, session }) {
         if (user) {
           const dbUser = await prisma.user.findUnique({ where: { email: user.email as string } });
           if (dbUser) {
@@ -91,6 +96,12 @@ export const authOptions: NextAuthOptions = {
             token.provider = dbUser.provider || undefined;
           }
         }
+        
+        // Update the token when the session is updated
+        if (trigger === "update" && session?.user?.image) {
+          token.image = session.user.image;
+        }
+        
         return token;
       },
       async session({ session, token }) {

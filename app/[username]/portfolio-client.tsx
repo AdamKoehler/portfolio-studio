@@ -1,8 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
 import { ProjectType } from "../dashboard/update/page";
+import dynamic from "next/dynamic";
+
+// Dynamically import theme components
+const themes = {
+  space: dynamic(() => import('@/app/themes/space'), { ssr: false }),
+  ocean: dynamic(() => import('@/app/themes/ocean'), { ssr: false }),
+  forest: dynamic(() => import('@/app/themes/forest'), { ssr: false }),
+}
 
 type PortfolioData = {
   aboutMe: string;
@@ -49,55 +56,12 @@ export function PortfolioClient({ username }: { username: string }) {
     return <div>Error: {error || "Portfolio not found"}</div>;
   }
 
-  // Temporary basic render until 3JS implementation
+  // Get the appropriate theme component
+  const ThemeComponent = themes[portfolioData.theme];
+
   return (
-    <div className="container mx-auto p-8">
-      <Card>
-        <CardContent className="p-6">
-          <h1 className="text-3xl font-bold mb-4">{username}&apos;s Portfolio</h1>
-          
-          <div className="mb-6">
-            <h2 className="text-2xl font-semibold mb-2">About Me</h2>
-            <p>{portfolioData.aboutMe}</p>
-          </div>
-
-          <div className="mb-6">
-            <h2 className="text-2xl font-semibold mb-2">Links</h2>
-            <div className="flex gap-4">
-              <a href={portfolioData.github} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
-                GitHub
-              </a>
-              <a href={portfolioData.linkedin} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
-                LinkedIn
-              </a>
-            </div>
-          </div>
-
-          <div>
-            <h2 className="text-2xl font-semibold mb-4">Projects</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {portfolioData.projects.map((project) => (
-                <Card key={project.id}>
-                  <CardContent className="p-4">
-                    {project.imageURL && (
-                      <img 
-                        src={project.imageURL} 
-                        alt={project.title}
-                        className="w-full h-48 object-cover rounded-t mb-4"
-                      />
-                    )}
-                    <h3 className="text-xl font-semibold mb-2">{project.title}</h3>
-                    <p className="mb-2">{project.description}</p>
-                    <a href={project.url} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
-                      View Project
-                    </a>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+    <div className="w-full h-screen">
+      <ThemeComponent portfolio={portfolioData} />
     </div>
   );
 } 
