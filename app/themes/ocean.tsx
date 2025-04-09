@@ -90,7 +90,7 @@ export default function OceanTheme({ portfolio }: Props) {
               key={project.id}
               project={project}
               position={[i * 4 - 6, 0, 0]}
-              color={['#4a90e2', '#50e3c2', '#f5a623'][i % 3]}
+              color={['#4a90e2', '#50e3c2', '#f5a623'][i % 3]} // random colors for each bubble
             />
           ))}
         </Suspense>
