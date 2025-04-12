@@ -9,42 +9,53 @@ import { ProjectType } from '@/app/dashboard/update/page'
 import Image from 'next/image'
 import { IntroductionScreen } from './intro-screen'
 import { Portfolio } from '@/app/types/portfolio'
+import { useLoader } from '@react-three/fiber'
 
-// Had to make this type alias to replace the project prop
 type Project = ProjectType
 
 type Props = {
   portfolio: Portfolio
 }
 
-// Custom star field for that sweet hyperspace effect
+// population of 10000 random stars for the background
 const HyperspaceStars = forwardRef<THREE.Points>((_, ref) => {
   const starsGeometry = useMemo(() => {
     const geometry = new THREE.BufferGeometry()
     const vertices = []
     const colors = []
     
-    // More stars near the camera for that depth effect
+    // generation of star positions and colors
     for (let i = 0; i < 10000; i++) {
+      // xyz regenerates each iteration to create a random star position
       const z = Math.random() * 20 - 10
       const x = (Math.random() - 0.5) * 2000
       const y = (Math.random() - 0.5) * 2000
       
       vertices.push(x, y, z)
       
-      // Some color variation to make it look less boring
+      // each star is assigned a random color
+      // hsl: hue, saturation, lightness
+      // h: Hue (0 to 1, 0.3= red, 0.6 =yellow etc.)
+      // s: Saturation (0 to 1, where 0 is grayscale and 1 is full color)
+      // l: Lightness (0 to 1, where 0 is black, 1 is white)
       const color = new THREE.Color()
       color.setHSL(Math.random() * 0.1 + 0.9, 0.5, Math.random() * 0.5 + 0.5)
       colors.push(color.r, color.g, color.b)
     }
+    // geometry position and color reads from vertice and color arrays that are defined in the for loop above
+    // each array has 10,000 elements and each element has 3 values [[x,y,z], [x,y,z], [x,y,z], ...] or [[r,g,b], [r,g,b], [r,g,b], ...]
     
+    // so to optimize rendering this many values with sub values, we can store them in a buffer and group them in groups of 3
+    // so [0,1,2,3,4,5,6,7,8,9,0,1] is now read as [[0,1,2], [3,4,5], [6,7,8], [9,0,1]] to represent vertice and RGB color assignment
     geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3))
     geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3))
     
     return geometry
   }, [])
 
-  const starsMaterial = useMemo(() => {
+  const starsMaterial = useMemo(() => { 
+    // use memo caches the definition of our star material
+    // star material is created once and then react reuses it without recreating it on every render
     return new THREE.PointsMaterial({
       size: 1,
       vertexColors: true,
@@ -52,7 +63,7 @@ const HyperspaceStars = forwardRef<THREE.Points>((_, ref) => {
       opacity: 0.8,
       sizeAttenuation: true,
     })
-  }, [])
+  }, []) // [] dependency: tells react to never re-run unless the component is remounted
 
   return <points ref={ref} geometry={starsGeometry} material={starsMaterial} />
 })
@@ -65,28 +76,31 @@ const TransitionEffect = ({ onComplete }: { onComplete: () => void }) => {
   const starsRef = useRef<THREE.Points>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   
-  useEffect(() => {
-    const duration = 4000
+  useEffect(() => { // once the component mounts the transition starts
+    const duration = 4000 // 4 seconds
     const startTime = Date.now()
     
     const animate = () => {
+      // this function is called every frame to determine how much time has passed
+      // once animation is at 4000ms the new progress is set to 1 to signal completion
       const elapsed = Date.now() - startTime
       const newProgress = Math.min(elapsed / duration, 1)
       setProgress(newProgress)
       
-      if (newProgress < 1) {
-        if (starsRef.current) {
-          const speed = Math.pow(newProgress, 2.5) * 800
-          starsRef.current.position.z = newProgress * speed
-          starsRef.current.rotation.y += 0.001
+      if (newProgress < 1) { // each frame we want to see if the animation is complete
+        if (starsRef.current) { // if not complete we want to move the stars so that it appears that the viewer is moving
+          const speed = Math.pow(newProgress, 2.5) * 800 // speed changes depending on newProgress value
+          starsRef.current.position.z = newProgress * speed // the further along in the animation the faster it appears
+          starsRef.current.rotation.y += 0.0005
+          starsRef.current.rotation.x += 0.0005
         }
-        requestAnimationFrame(animate)
-      } else {
+        requestAnimationFrame(animate) // if animation isnt complete requestAnimationFrame is called to run the animate function before the next browser repaint 
+      } else { // animation is done we we can call onComplete (calls handleTransitionComplete function to change state of what to show)
         onComplete()
       }
     }
     
-    animate()
+    animate() // starts the animation once the component mounts ^
   }, [onComplete])
 
   return (
@@ -99,10 +113,10 @@ const TransitionEffect = ({ onComplete }: { onComplete: () => void }) => {
         <Suspense fallback={null}>
           <Stars
             ref={starsRef}
-            radius={50}
-            depth={30}
+            radius={100}
+            depth={500}
             count={30000}
-            factor={1.5}
+            factor={10}
             saturation={0}
             fade
             speed={4}
@@ -113,8 +127,10 @@ const TransitionEffect = ({ onComplete }: { onComplete: () => void }) => {
   )
 }
 
-// The sun in the center of the solar system
-const CentralStar = () => {
+// The sun in the center of the scene
+const Sun = () => {
+  const texture = useLoader(THREE.TextureLoader, '/sunTexture.jpg')
+
   const meshRef = useRef<THREE.Mesh>(null!)
 
   useFrame(({ clock }) => {
@@ -126,27 +142,27 @@ const CentralStar = () => {
   return (
     <group>
       <mesh ref={meshRef}>
-        <sphereGeometry args={[3, 32, 32]} />
+        <sphereGeometry args={[3, 64, 64]} />
         <meshStandardMaterial 
-          color="#ff6b6b"
-          emissive="#ff6b6b"
-          emissiveIntensity={0.2}
+          map={texture}
+          emissive="#ffaa00"
+          emissiveIntensity={1.5}
           roughness={0.2}
           metalness={0.8}
+          toneMapped={false}
         />
       </mesh>
       <pointLight
         position={[0, 0, 0]}
-        intensity={0.3}
-        distance={20}
-        decay={2}
-        color="#ff6b6b"
+        intensity={1}
+        distance={40}
+        decay={1.5}
+        color="#ffaa00"
       />
     </group>
   )
 }
 
-// Camera light to make sure we can see everything
 const CameraLight = () => {
   return (
     <group>
@@ -161,7 +177,7 @@ const CameraLight = () => {
   )
 }
 
-// Modal that pops up when you click a project
+// Div that pops up a display of project details when you click a project
 const ProjectDetails = ({ project, onClose }: { project: ProjectType, onClose: () => void }) => {
   return (
     <div className="absolute inset-0 flex items-center justify-center z-30">
@@ -209,13 +225,13 @@ const ProjectDetails = ({ project, onClose }: { project: ProjectType, onClose: (
   )
 }
 
-// Each project is represented as a floating planet
+// Each project is represented as a sphere mesh like a planet
 const FloatingPlanet = ({ position, color = 'skyblue', project, onClick }: any) => {
-  const meshRef = useRef<THREE.Mesh>(null!)
-  const groupRef = useRef<THREE.Group>(null!)
-  const textRef = useRef<any>(null)
+  const meshRef = useRef<THREE.Mesh>(null!) // the planet sphere itself
+  const groupRef = useRef<THREE.Group>(null!) // the wrapper around the planet + text
+  const textRef = useRef<any>(null) // text displaying the project title
 
-  useFrame((state) => {
+  useFrame((state) => { // use frame hook runs every frame to update the planet's position and rotation
     const { clock, camera } = state
     if (groupRef.current) {
       groupRef.current.rotation.y = clock.getElapsedTime() / 4
@@ -225,7 +241,7 @@ const FloatingPlanet = ({ position, color = 'skyblue', project, onClick }: any) 
       meshRef.current.rotation.y = clock.getElapsedTime() / 2
     }
     if (textRef.current) {
-      textRef.current.lookAt(camera.position)
+      textRef.current.lookAt(camera.position) // label always faces the camera
     }
   })
 
@@ -313,22 +329,22 @@ export default function SpaceTheme({ portfolio }: Props) {
       
       {showProjects && (
         <>
-          <Canvas camera={{ position: [0, 5, 25], fov: 60 }}>
+          <Canvas camera={{ position: [0, 5, 25], fov: 70 }}>
             <color attach="background" args={['#000000']} />
             <ambientLight intensity={0.02} />
             
             <Stars 
-              radius={300} 
-              depth={60} 
-              count={20000} 
-              factor={2}
-              saturation={0} 
+              radius={60} 
+              depth={100} 
+              count={10000} 
+              factor={4}
+              saturation={80} 
               fade 
-              speed={1}
+              speed={2}
             />
 
             <Suspense fallback={null}>
-              <CentralStar />
+              <Sun />
               <CameraLight />
               {/* About Me planet */}
               <FloatingPlanet
