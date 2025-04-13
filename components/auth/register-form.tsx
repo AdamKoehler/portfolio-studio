@@ -52,7 +52,10 @@ const RegisterForm = () => {
     backButtonHref = "/auth/login"
     backButtonLabel = "Already have an account? Login here">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <form onSubmit={(e) => {
+          e.preventDefault();
+          form.handleSubmit(onSubmit)(e);
+        }} className="space-y-6">
           <div className="space-y-4">
             
             <FormField
