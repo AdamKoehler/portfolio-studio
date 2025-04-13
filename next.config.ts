@@ -1,8 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  reactStrictMode: true,
   eslint: {
-    ignoreDuringBuilds: true, // disablesd ESLint checks during the build
+    ignoreDuringBuilds: true, // disablesd ESLint checks during the build, not sure how important this is but it was annoying
   },
   images: {
     remotePatterns: [
