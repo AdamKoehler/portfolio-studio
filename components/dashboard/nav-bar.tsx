@@ -48,6 +48,16 @@ export default function NavBar() {
     setMobileMenuOpen(!mobileMenuOpen);
   };
 
+  const handleSignOut = async () => {
+    try {
+      await signOut({ 
+        callbackUrl: window.location.origin 
+      });
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
+  };
+
   return (
     <div className="fixed top-0 left-0 right-0 z-50 bg-white shadow-md w-full py-4">
       {/* Mobile version */}
@@ -82,7 +92,7 @@ export default function NavBar() {
                 </DropdownMenuItem>
               </DropdownMenuGroup>
               <DropdownMenuGroup>  
-                <DropdownMenuItem onClick={() => signOut({ callbackUrl: process.env.NEXTAUTH_URL })} className="text-red-600">
+                <DropdownMenuItem onClick={handleSignOut} className="text-red-600">
                   Sign out
                 </DropdownMenuItem>
               </DropdownMenuGroup>
@@ -133,7 +143,7 @@ export default function NavBar() {
                     </DropdownMenuItem>
                   </DropdownMenuGroup>
                   <DropdownMenuGroup>  
-                    <DropdownMenuItem onClick={() => signOut({ callbackUrl: process.env.NEXTAUTH_URL })} className="text-red-600">
+                    <DropdownMenuItem onClick={handleSignOut} className="text-red-600">
                       Sign out
                     </DropdownMenuItem>
                   </DropdownMenuGroup>

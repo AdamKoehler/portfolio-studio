@@ -19,7 +19,24 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  devIndicators: false
+  devIndicators: false,
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: [
+          {
+            key: 'Content-Security-Policy',
+            value: "frame-ancestors 'self' https://*.cloudinary.com;"
+          },
+          {
+            key: 'X-Frame-Options',
+            value: 'SAMEORIGIN'
+          }
+        ],
+      },
+    ]
+  }
 };
 
 export default nextConfig;

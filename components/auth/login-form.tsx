@@ -99,7 +99,7 @@ const { pending } = useFormStatus();
             />
           </div>
           <FormSuccess message={success}/>
-          <FormError message={error}/>
+          <FormError />
           <Button type="submit" className="w-full mt-4" disabled={pending}>
             {loading ? "Loading...":"Login"}
           </Button>

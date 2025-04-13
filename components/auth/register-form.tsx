@@ -15,6 +15,7 @@ import { FormSuccess } from "./form-success";
 import { FormError } from "./form-error";
 import { OAuthSeparator } from "./seperator"
 
+const domain = "https://portfolio-studio-kappa.vercel.app/"; // trailing slash here
 
 const RegisterForm = () => {
   const [loading, setLoading] = useState(false); // starting state is false, changes upon button click
@@ -119,7 +120,7 @@ const RegisterForm = () => {
             />
           </div>
           <FormSuccess message={success} />
-          <FormError message={error} />
+          <FormError />
           <Button type="submit" className="w-full mt-4" disabled={pending}>{loading ? "Loading..." : "Register"}</Button>
           <OAuthSeparator/>
         </form>
