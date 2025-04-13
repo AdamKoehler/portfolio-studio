@@ -1,10 +1,13 @@
 import { SonnerAlert } from "@/components/sonner-alert/sonner";
 
+interface FormErrorProps {
+  message?: string;
+}
 
-export const FormError = () => {
+export const FormError = ({ message }: FormErrorProps) => {
   return (
     <>
-    {SonnerAlert("Request failed", "error")}
+    {SonnerAlert(message || "Request failed", "error")}
     </>
   );
 };
