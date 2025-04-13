@@ -6,11 +6,7 @@ import Image from "next/image";
 import type { CloudinaryUploadWidgetResults } from "next-cloudinary";
 import { SonnerAlert } from "@/components/sonner-alert/sonner";
 
-interface CloudinaryUploadWidgetInfo {
-  secure_url: string;
-}
-
-export default function UploadProfileImage() {
+const UploadProfileImage = () => {
   const { data: session, update } = useSession();
   const [isUploading, setIsUploading] = useState(false);
 
@@ -41,8 +37,11 @@ export default function UploadProfileImage() {
             image: secureUrl,
           },
         });
+        
+        SonnerAlert("Profile picture updated successfully!", "success");
       } catch (error) {
         console.error("Error updating profile:", error);
+        SonnerAlert("Failed to update profile picture. Please try again.", "error");
       } finally {
         setIsUploading(false);
       }
@@ -114,3 +113,5 @@ export default function UploadProfileImage() {
     </div>
   );
 }
+
+export default UploadProfileImage;

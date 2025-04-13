@@ -2,7 +2,7 @@
 
 import { Card } from "@/components/ui/card";
 import { useSession } from "next-auth/react";
-import { UploadProfileImage } from "@/components/dashboard/profile-pic-update";
+import UploadProfileImage from "@/components/dashboard/profile-pic-update";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 const ProfilePage = () => {
@@ -30,13 +30,11 @@ const ProfilePage = () => {
           </Avatar>
 
           {/* Upload Profile Image Component */}
-          <UploadProfileImage profileOwner={user.id}/>
+          <UploadProfileImage />
 
           {/* User Information */}
           <h1 className="text-2xl font-semibold">{user?.name}</h1>
           <p className="text-gray-600">{user?.email}</p>
-
-          
 
         </div>
       </Card>
