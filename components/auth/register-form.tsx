@@ -123,7 +123,7 @@ const RegisterForm = () => {
             />
           </div>
           <FormSuccess message={success} />
-          <FormError message={error} />
+          {error && <FormError message={error} />}
           <Button type="submit" className="w-full mt-4" disabled={pending}>{loading ? "Loading..." : "Register"}</Button>
           <OAuthSeparator/>
         </form>
