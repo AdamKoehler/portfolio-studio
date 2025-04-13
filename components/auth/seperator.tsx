@@ -5,7 +5,7 @@ import { signIn } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import GithubIcon from "@/components/icons/github-icon";
 import GoogleIcon from "@/components/icons/google-icon";
-
+import { SonnerAlert } from "@/components/sonner-alert/sonner";
 const domain = "https://portfolio-studio-kappa.vercel.app";
 export function OAuthSeparator() {
 
@@ -14,7 +14,7 @@ export function OAuthSeparator() {
     const res = await signIn(provider, { callbackUrl: `${domain}/dashboard` });
 
     if (res?.error) {// error
-      alert("OAuth Login failed. Please try again.");
+      SonnerAlert("OAuth Login failed. Please try again.", "error");
       console.log(res.error);
     }
 
