@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import GithubIcon from "@/components/icons/github-icon";
 import GoogleIcon from "@/components/icons/google-icon";
 
-const domain = "http://localhost:3000";
+const domain = "https://portfolio-studio-kappa.vercel.app";
 export function OAuthSeparator() {
 
   const handleOAuthLogin = async (provider: string) => {
