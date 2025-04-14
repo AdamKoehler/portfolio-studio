@@ -2,9 +2,9 @@
 import { useCallback, useState } from "react";
 import { useSession } from "next-auth/react";
 import { CldUploadWidget } from "next-cloudinary";
-import Image from "next/image";
 import type { CloudinaryUploadWidgetResults } from "next-cloudinary";
 import { SonnerAlert } from "@/components/sonner-alert/sonner";
+import { Button } from "@/components/ui/button";
 
 const UploadProfileImage = () => {
   const { data: session, update } = useSession();
@@ -50,20 +50,6 @@ const UploadProfileImage = () => {
 
   return (
     <div className="flex flex-col items-center gap-4">
-      <div className="relative w-32 h-32 rounded-full overflow-hidden">
-        {session?.user?.image ? (
-          <Image
-            src={session.user.image}
-            alt="Profile"
-            fill
-            className="object-cover"
-          />
-        ) : (
-          <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-            <span className="text-gray-500">No image</span>
-          </div>
-        )}
-      </div>
       <CldUploadWidget
         uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_PROFILE_UPLOAD_PRESET}
         onSuccess={handleUpload}
@@ -79,13 +65,13 @@ const UploadProfileImage = () => {
         }}
       >
         {({ open }) => (
-          <button
+          <Button
             onClick={() => open()}
             disabled={isUploading}
             className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isUploading ? "Uploading..." : "Change Profile Picture"}
-          </button>
+          </Button>
         )}
       </CldUploadWidget>
     </div>
