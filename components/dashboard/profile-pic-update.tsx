@@ -11,29 +11,17 @@ const UploadProfileImage = () => {
   const [isUploading, setIsUploading] = useState(false);
 
   const handleUpload = useCallback(async (result: CloudinaryUploadWidgetResults) => {
+    console.log("Upload result:", result);
+    
     const secureUrl = typeof result.info === 'string' ? result.info : result.info?.secure_url;
+    console.log("Secure URL:", secureUrl);
     
     if (secureUrl) {
       setIsUploading(true);
       try {
-        const response = await fetch("/api/user/update-profile", {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            image: secureUrl,
-          }),
-        });
-
-        if (!response.ok) {
-          throw new Error("Failed to update profile");
-        }
-
+        // Instead of updating the entire session, just update the image
         await update({
-          ...session,
           user: {
-            ...session?.user,
             image: secureUrl,
           },
         });
@@ -45,14 +33,21 @@ const UploadProfileImage = () => {
       } finally {
         setIsUploading(false);
       }
+    } else {
+      console.error("No secure URL found in upload result");
+      SonnerAlert("Failed to get image URL. Please try again.", "error");
     }
-  }, [session, update]);
+  }, [update]);
 
   return (
     <div className="flex flex-col items-center gap-4">
       <CldUploadWidget
         uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_PROFILE_UPLOAD_PRESET}
         onSuccess={handleUpload}
+        onError={(error) => {
+          console.error("Cloudinary upload error:", error);
+          SonnerAlert("Upload failed. Please try again.", "error");
+        }}
         options={{
           folder: 'profiles',
           maxFiles: 1,

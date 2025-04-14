@@ -20,6 +20,15 @@ const nextConfig: NextConfig = {
     ],
   },
   devIndicators: false,
+  async redirects() {
+    return [
+      {
+        source: '/profile',
+        destination: '/dashboard/profile',
+        permanent: true,
+      },
+    ];
+  },
   async headers() {
     return [
       {
