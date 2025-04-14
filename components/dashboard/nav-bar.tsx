@@ -35,8 +35,6 @@ export default function NavBar() {
     return <div>Loading...</div>;
   }
   
-  const userId = session.user.id;
-  
   const navItems = [
     { path: '/dashboard', label: 'Dashboard' },
     { path: '/dashboard/create', label: 'Create' },

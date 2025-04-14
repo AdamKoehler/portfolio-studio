@@ -1,5 +1,5 @@
 "use client";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { useSession } from "next-auth/react";
 import { CldUploadWidget } from "next-cloudinary";
 import Image from "next/image";
@@ -65,39 +65,17 @@ const UploadProfileImage = () => {
         )}
       </div>
       <CldUploadWidget
-        uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET}
-        onUpload={handleUpload}
+        uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_PROFILE_UPLOAD_PRESET}
+        onSuccess={handleUpload}
         options={{
+          folder: 'profiles',
           maxFiles: 1,
           resourceType: "image",
-          sources: ["local", "url"],
-          styles: {
-            palette: {
-              window: "#FFFFFF",
-              windowBorder: "#90A0B3",
-              tabIcon: "#0078FF",
-              menuIcons: "#5A616A",
-              textDark: "#000000",
-              textLight: "#FFFFFF",
-              link: "#0078FF",
-              action: "#FF620C",
-              inactiveTabIcon: "#0E2F5A",
-              error: "#F44235",
-              inProgress: "#0078FF",
-              complete: "#20B832",
-              sourceBg: "#E4EBF1",
-              folder: "#0078FF",
-            },
-          },
-          showAdvancedOptions: false,
+          sources: ["local", "url", "camera"],
           cropping: true,
           croppingAspectRatio: 1,
-          croppingShowDimensions: true,
-          croppingValidateDimensions: true,
           clientAllowedFormats: ["image"],
-          maxImageFileSize: 2000000,
-          maxImageWidth: 2000,
-          maxImageHeight: 2000,
+          maxImageFileSize: 2000000, // 2mb
         }}
       >
         {({ open }) => (
