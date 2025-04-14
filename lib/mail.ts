@@ -10,7 +10,7 @@ export const sendVerificationEmail = async (email: string, token: string) => {
 
     try {
         const { data, error } = await resend.emails.send({
-            from: "Portfolio Studio <noreply@portfolio-studio-kappa.vercel.app>",
+            from: "Portfolio Studio <noreply@3dportfol.io>",
             to: email,
             subject: "Please verify your email address",
             html: `
