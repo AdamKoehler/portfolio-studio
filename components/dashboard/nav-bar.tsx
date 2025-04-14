@@ -138,7 +138,7 @@ export default function NavBar() {
                   <DropdownMenuLabel>My Account</DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuGroup>
-                    <DropdownMenuItem onClick={() => router.push('/dashboard/profile')}>
+                    <DropdownMenuItem onClick={() => router.push('/profile')}>
                       View Profile
                     </DropdownMenuItem>
                   </DropdownMenuGroup>
