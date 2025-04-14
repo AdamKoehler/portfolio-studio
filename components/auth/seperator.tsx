@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import GithubIcon from "@/components/icons/github-icon";
 import GoogleIcon from "@/components/icons/google-icon";
 import { SonnerAlert } from "@/components/sonner-alert/sonner";
-const domain = "https://portfolio-studio-kappa.vercel.app";
+const domain = "https://www.3dportfol.io/";
 export function OAuthSeparator() {
 
   const handleOAuthLogin = async (provider: string) => {
