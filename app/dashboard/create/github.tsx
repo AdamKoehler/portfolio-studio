@@ -1,15 +1,12 @@
-"use client";
 import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Toggle } from "@/components/ui/toggle";
 import { Card, CardContent } from "@/components/ui/card";
 import { SonnerAlert } from "@/components/sonner-alert/sonner";
-import { useRouter } from "next/navigation";
 
 
-export default function GitHub() {
-  const router = useRouter();
+export default function GitHub({ onImportSuccess }: { onImportSuccess: () => void }) {
   const [username, setUsername] = useState("");
   const [repositories, setRepositories] = useState([]);
   const [selectedRepos, setSelectedRepos] = useState<Set<number>>(new Set());
@@ -64,7 +61,7 @@ const fetchRepositories = async () => {
         return;
       }
       SonnerAlert(`Repositories imported successfully.`, "success");
-      router.refresh();
+      onImportSuccess(); // update parent component to refresh the page
     } catch (error) {
       SonnerAlert(`${error}`, "error");
     }

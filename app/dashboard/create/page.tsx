@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import Local from "./manual";
@@ -14,9 +14,12 @@ import { SonnerAlert } from "@/components/sonner-alert/sonner";
 export default function CreatePage() {
   const router = useRouter();
   const { data: session } = useSession();
-    if (!session) {
-      router.push("/"); // ensures users are logged in
-    }
+  if (session === undefined) return null;
+  if (!session) {
+    router.push("/");
+    return null;
+  }
+  
   const userId = session?.user.id as string;
   async function handleClick(input: number) {
     let theme: string;
@@ -45,7 +48,8 @@ export default function CreatePage() {
     
       const data = await response.json();
       if (data.error) {
-        SonnerAlert("Error creating portfolio" + response.toString(), "error");
+        SonnerAlert("Error creating portfolio", "error");
+        console.log(data.error);
       } else {
         SonnerAlert("Your portfolio has been saved successfully!", "success");
         
@@ -85,8 +89,8 @@ export default function CreatePage() {
         <Separator className="h-6 w-px bg-muted" />
         <Button className="shadow-black" variant={selectedComponent === "GitHub" ? "default" : "secondary"} onClick={() => handleSelect("GitHub")}>GitHub</Button>
       </div>
-        {selectedComponent === "GitHub" && <GitHub />}
-        {selectedComponent === "Local" && <Local />}
+      {selectedComponent === "GitHub" && <GitHub onImportSuccess={() => setHasAddedProjects(true)} />}
+      {selectedComponent === "Local" && <Local onAddSuccess={() => setHasAddedProjects(true)} />}
       </div>
       <div className="flex flex-col w-full mt-20 justify-center text-center">
           <h1 className="text-3xl font-bold">Step 2.</h1>

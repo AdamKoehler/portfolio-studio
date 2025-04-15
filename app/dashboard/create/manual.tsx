@@ -5,24 +5,21 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
 import { SonnerAlert } from "@/components/sonner-alert/sonner";
-import { useSession } from "next-auth/react"; 
 
 
-export default function Local() {
-
+export default function Local({ onAddSuccess }: { onAddSuccess: () => void }) {
   return (
     <Card className="max-w-md mx-auto mt-10 p-6 shadow-lg">
       <CardContent>
         <h2 className="text-xl font-bold mb-4">Project Information</h2>
-        <LocalForm />
+        <LocalForm onAddSuccess={onAddSuccess} />
       </CardContent>
     </Card>
   );
 }
 
-const LocalForm: React.FC = () => { // local form component with default values
-  const { data: session } = useSession();
-  const userId = session?.user.id as string;
+const LocalForm: React.FC<{ onAddSuccess: () => void }> = ({ onAddSuccess }) => {
+  
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -38,7 +35,7 @@ const LocalForm: React.FC = () => { // local form component with default values
   const submit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault(); // Prevent default form submission
     
-    try {
+    try { // userid is grabbed from session on the server side with this api call
       const response = await fetch("/api/post-project", {
         method: "POST",
         headers: {
@@ -60,6 +57,7 @@ const LocalForm: React.FC = () => { // local form component with default values
       }
   
       SonnerAlert("Project created successfully.", "success");
+      onAddSuccess(); // update parent component to refresh the page
     } catch (error) {
       SonnerAlert("Error creating project", "error");
     }

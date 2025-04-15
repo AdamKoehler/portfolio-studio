@@ -34,9 +34,6 @@ export async function POST(req: Request) {
             }
         });
 
-        // Revalidate the projects page to reflect the new project
-        revalidatePath('/dashboard/create');
-
         return NextResponse.json({ message: "Project created successfully", project: createdProject }, { status: 200 });
 
     } catch (error) {
