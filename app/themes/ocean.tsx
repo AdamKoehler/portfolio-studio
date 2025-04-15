@@ -69,7 +69,7 @@ const FloatingBubble = ({ position, color, project, onClick }: FloatingBubblePro
 }
 
 const Volcano = () => {
-  const { scene } = useGLTF('/volcano.glb')
+  const { scene } = useGLTF('/volcano.glb') // stored in public folder
   const meshRef = useRef<THREE.Mesh>(null!)
 
   return (
