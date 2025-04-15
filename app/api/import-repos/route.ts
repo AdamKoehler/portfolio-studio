@@ -35,6 +35,8 @@ export async function POST(req: Request) {
       }
     }
 
+    // Revalidate the create page to reflect the new imports
+    revalidatePath('/dashboard/create');
 
     return NextResponse.json({ success: true, imported: importedRepos.length }, { status: 200 });
   } catch (error) {

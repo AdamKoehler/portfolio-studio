@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
       console.log("Projects:", projects);
       // Upsert (update or create) the portfolio for the user
         try {
-        const portfolio = await prisma.portfolio.upsert({
+        await prisma.portfolio.upsert({
           where: { ownerId: userId },
           update: {
             theme, // Update the theme field
