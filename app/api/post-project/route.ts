@@ -3,6 +3,8 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import { getUserByEmail } from "@/data/user";
+import { revalidatePath } from 'next/cache';
+
 const prisma = new PrismaClient();
 
 export async function POST(req: Request) {
@@ -31,6 +33,9 @@ export async function POST(req: Request) {
                 owner: { connect: { id: userId as string } },
             }
         });
+
+        // Revalidate the projects page to reflect the new project
+        revalidatePath('/dashboard/create');
 
         return NextResponse.json({ message: "Project created successfully", project: createdProject }, { status: 200 });
 

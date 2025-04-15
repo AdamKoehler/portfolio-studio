@@ -1,5 +1,6 @@
 // app/api/project-images/route.ts
 import { PrismaClient } from "@prisma/client";
+import { revalidatePath } from 'next/cache';
 
 const prisma = new PrismaClient();
 
@@ -23,6 +24,9 @@ export async function POST(req: Request) {
       where: { id: projectId, ownerId: userId },
       data: { imageURL: imageUrl },
     });
+
+    // Revalidate the projects page to reflect the change of the image status
+    revalidatePath('/dashboard/update');
 
     return new Response(JSON.stringify({ message: "Image updated successfully", project: updatedProject }), { status: 200 });
   } catch (error) {

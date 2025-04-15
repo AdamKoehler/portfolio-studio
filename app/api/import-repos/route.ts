@@ -3,6 +3,7 @@ import { database } from "@/lib/database";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import { getUserByEmail } from "@/data/user";
+import { revalidatePath } from 'next/cache';
 const key = process.env.GITHUB_API_KEY;
 
 export async function POST(req: Request) {
@@ -33,6 +34,9 @@ export async function POST(req: Request) {
         importedRepos.push(repoDetails);
       }
     }
+
+    // Revalidate the projects page to reflect the new imports
+    revalidatePath('/dashboard/create');
 
     return NextResponse.json({ success: true, imported: importedRepos.length }, { status: 200 });
   } catch (error) {
