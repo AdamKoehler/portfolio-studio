@@ -6,6 +6,7 @@ import NavWrapper from "@/components/dashboard/nav-wrapper";
 import { ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import { Analytics } from "@vercel/analytics/react"
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 export const metadata: Metadata = {
   title: "Portfolio Studio",
@@ -31,6 +32,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         closeButton={true}
         /> {/* This is needed to render the toasts which i use instead of alert() */}
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
