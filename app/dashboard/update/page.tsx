@@ -104,6 +104,7 @@ export default function EditPortfolio() {
     if (response.ok || response.status === 200) {
       const updatedProjects = formData.projects.filter((project) => project.id !== projectId);
       setFormData({ ...formData, projects: updatedProjects });
+      setHasChanged(true);
       SonnerAlert("Project deleted successfully.", "success");
     }
   } catch (error) {
