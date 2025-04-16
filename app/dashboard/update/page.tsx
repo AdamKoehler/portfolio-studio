@@ -122,7 +122,26 @@ export default function EditPortfolio() {
 
     if (res.ok) {
       setHasChanged(false);
-      setHasSaved(true);
+      
+      // Check if user already has a username
+      const portfolioRes = await fetch(`/api/get-portfolio?userId=${userId}`);
+      const portfolioData = await portfolioRes.json();
+      
+      if (portfolioData.success && portfolioData.portfolio && portfolioData.portfolio.ownerUsername) {
+        // if user already has a username, we can rehost it with updated portfolio and redirect to the new page
+        await fetch(`/api/host-portfolio`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ 
+            userId, 
+            username: portfolioData.portfolio.ownerUsername 
+          }),
+        });
+        router.push(`/${portfolioData.portfolio.ownerUsername}`);
+      } else {
+        // No username yet, show the username form
+        setHasSaved(true);
+      }
     } else {
       SonnerAlert("Error updating portfolio." + res.statusText, "error");
     }

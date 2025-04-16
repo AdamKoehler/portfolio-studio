@@ -20,17 +20,44 @@ export function HostPortfolioForm() {
 
   const userId = session?.user.id as string;
 
+  // List of reserved terms that cannot be used as usernames
+  // because domainname/reservedTerm could cause issues with routing
+  const reservedTerms = [
+    "dashboard", "api", "auth", "login", "register", "delete", "/", "profile", "create", "update", "username",
+    "admin", "about", "contact", "help", "support", "terms", "privacy", "settings", "account", "logout",
+    "search", "explore", "home", "index", "main", "default", "error", "404", "500", "403", "401",
+    "assets", "images", "img", "css", "js", "static", "public", "private", "secure", "auth", "oauth",
+    "callback", "redirect", "return", "success", "failure", "error", "warning", "info", "debug", "test",
+    "beta", "alpha", "staging", "production", "dev", "development", "prod", "production", "live", "demo", "URL_SAFE_USERNAME"
+  ];
+
   const handleHost = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Check if username is in reserved terms
+    if (reservedTerms.includes(username.toLowerCase())) {
+      SonnerAlert(`"${username}" is a reserved term and cannot be used as a username.`, "error");
+      return;
+    }
 
     // Validate using Zod
     const validationResult = usernameSchema.safeParse({ username });
 
     if (!validationResult.success) {
-      SonnerAlert(validationResult.error.errors[0].message, "error");
+      // Display the first validation error message
+      const errorMessage = validationResult.error?.errors[0]?.message || "Please enter a valid username";
+      SonnerAlert(errorMessage, "error");
       return;
     }
 
+    // Check for empty username
+    if (!username || username.trim() === "") {
+      SonnerAlert("Username cannot be empty", "error");
+      return;
+    }
+    // if we havent returned by now, then the username is valid but validation isnt done yet
+    // did as much validation on the client side as possible to avoid unnecessary api calls and save server resources
+    // the api route will handle if the username already exists and does not belong to the user
     const res = await fetch(`/api/host-portfolio`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
