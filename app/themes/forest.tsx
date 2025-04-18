@@ -128,7 +128,6 @@ const Scene = ({ projectPositions, portfolio, handleReturnToIntro, handleProject
       
       <Canvas camera={{ position: [0, 5, 15], fov: 75 }}>
         <color attach="background" args={['#1a472a']} />
-        <fog attach="fog" args={['#1a472a', 20, 100]} />
         
         {/* Ambient light for general illumination */}
         <ambientLight intensity={0.5} />
