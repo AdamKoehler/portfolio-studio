@@ -188,8 +188,8 @@ const Scene = ({ projectPositions, portfolio, handleReturnToIntro, handleProject
           minDistance={5}
           maxDistance={30}
           enablePan={false}
-          minPolarAngle={Math.PI / 4} // Limit how far down the camera can go (45 degrees)
-          maxPolarAngle={Math.PI / 2} // Limit how far up the camera can go (90 degrees)
+          minPolarAngle={Math.PI / 6} // looking down 30 degrees from horizontal
+          maxPolarAngle={Math.PI / 2} // upper limit 90 degrees from horizontal
         />
       </Canvas>
     </>
