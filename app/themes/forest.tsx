@@ -9,6 +9,34 @@ import { IntroductionScreen } from './intro-screen'
 import { Portfolio as PortfolioType } from '@/app/types/portfolio'
 import { Progress } from '@/components/ui/progress'
 
+// Camera controller component that must be inside Canvas
+const CameraController = () => {
+  const { camera } = useThree()
+  const controlsRef = useRef<any>(null)
+
+  useFrame(() => {
+    if (controlsRef.current) {
+      // If camera is below 2 units, adjust it
+      if (camera.position.y < 2) {
+        camera.position.y = 2
+        controlsRef.current.update()
+      }
+    }
+  })
+
+  return (
+    <OrbitControls 
+      ref={controlsRef}
+      enableZoom={true}
+      minDistance={5}
+      maxDistance={30}
+      enablePan={false}
+      minPolarAngle={Math.PI / 6} // looking down 30 degrees from horizontal
+      maxPolarAngle={Math.PI / 2} // upper limit 90 degrees from horizontal
+    />
+  )
+}
+
 // Simple sky with gradient
 const Sky = () => {
   return (
@@ -61,7 +89,7 @@ const ProjectPlaceholder = ({ position, project, onClick }: {
   )
 }
 
-// progress component from shadcn/ui. 19mb file size from blender so it might be slow on mobile
+// progress component from shadcn/ui. large mesh from blender so it might be slow on mobile
 const LoadingProgress = ({ progress }: { progress: number }) => {
   return (
     <div className="absolute inset-0 flex flex-col items-center justify-center z-50 bg-green-900/80 backdrop-blur-sm">
@@ -136,23 +164,6 @@ const Scene = ({ projectPositions, portfolio, handleReturnToIntro, handleProject
   // Show loading UI until progress reaches 100%
   const isLoading = progress < 100
 
-  // Reference to the camera controls
-  const controlsRef = useRef<any>(null)
-
-  // Update camera position constraints on each frame
-  useFrame((state) => {
-    if (controlsRef.current) {
-      // Get current camera position
-      const camera = state.camera
-      
-      // If camera is below 2 units, adjust it
-      if (camera.position.y < 2) {
-        camera.position.y = 2
-        controlsRef.current.update()
-      }
-    }
-  })
-
   return (
     <>
       {isLoading && <LoadingProgress progress={progress} />}
@@ -200,16 +211,8 @@ const Scene = ({ projectPositions, portfolio, handleReturnToIntro, handleProject
           ))}
         </Suspense>
 
-        {/* Camera controls with 360-degree view */}
-        <OrbitControls 
-          ref={controlsRef}
-          enableZoom={true}
-          minDistance={5}
-          maxDistance={30}
-          enablePan={false}
-          minPolarAngle={Math.PI / 6} // looking down 30 degrees from horizontal
-          maxPolarAngle={Math.PI / 2} // upper limit 90 degrees from horizontal
-        />
+        {/* Camera controller with position constraints */}
+        <CameraController />
       </Canvas>
     </>
   )
