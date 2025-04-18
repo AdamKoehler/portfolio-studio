@@ -13,7 +13,7 @@ import { Progress } from '@/components/ui/progress'
 const Sky = () => {
   return (
     <mesh position={[0, 0, 0]}>
-      <sphereGeometry args={[100, 32, 32]} />
+      <sphereGeometry args={[200, 32, 32]} />
       <meshBasicMaterial 
         color="#87CEEB" 
         side={THREE.BackSide}
@@ -188,6 +188,8 @@ const Scene = ({ projectPositions, portfolio, handleReturnToIntro, handleProject
           minDistance={5}
           maxDistance={30}
           enablePan={false}
+          minPolarAngle={Math.PI / 4} // Limit how far down the camera can go (45 degrees)
+          maxPolarAngle={Math.PI / 2} // Limit how far up the camera can go (90 degrees)
         />
       </Canvas>
     </>
