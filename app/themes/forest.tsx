@@ -1,13 +1,27 @@
 'use client'
 
-import { Canvas, useFrame } from '@react-three/fiber'
+import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { OrbitControls, Text, useGLTF, useProgress } from '@react-three/drei'
-import { Suspense, useRef, useState, useEffect } from 'react'
+import { Suspense, useRef, useState, useEffect, useMemo } from 'react'
 import * as THREE from 'three'
 import { ProjectType } from '@/app/dashboard/update/page'
 import { IntroductionScreen } from './intro-screen'
 import { Portfolio as PortfolioType } from '@/app/types/portfolio'
 import { Progress } from '@/components/ui/progress'
+
+// Simple sky with gradient
+const Sky = () => {
+  return (
+    <mesh position={[0, 0, 0]}>
+      <sphereGeometry args={[100, 32, 32]} />
+      <meshBasicMaterial 
+        color="#87CEEB" 
+        side={THREE.BackSide}
+        fog={false}
+      />
+    </mesh>
+  )
+}
 
 // temporarily using this as a placeholder for projects until I create campsite meshes in blender
 const ProjectPlaceholder = ({ position, project, onClick }: { 
@@ -127,7 +141,9 @@ const Scene = ({ projectPositions, portfolio, handleReturnToIntro, handleProject
       {isLoading && <LoadingProgress progress={progress} />}
       
       <Canvas camera={{ position: [0, 5, 15], fov: 75 }}>
-        <color attach="background" args={['#1a472a']} />
+        
+        {/* Sky gradient */}
+        <Sky />
         
         {/* Ambient light for general illumination */}
         <ambientLight intensity={0.5} />
