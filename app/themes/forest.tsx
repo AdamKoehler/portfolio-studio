@@ -136,11 +136,29 @@ const Scene = ({ projectPositions, portfolio, handleReturnToIntro, handleProject
   // Show loading UI until progress reaches 100%
   const isLoading = progress < 100
 
+  // Reference to the camera controls
+  const controlsRef = useRef<any>(null)
+
+  // Update camera position constraints on each frame
+  useFrame((state) => {
+    if (controlsRef.current) {
+      // Get current camera position
+      const camera = state.camera
+      
+      // If camera is below 2 units, adjust it
+      if (camera.position.y < 2) {
+        camera.position.y = 2
+        controlsRef.current.update()
+      }
+    }
+  })
+
   return (
     <>
       {isLoading && <LoadingProgress progress={progress} />}
       
       <Canvas camera={{ position: [0, 5, 15], fov: 75 }}>
+        <color attach="background" args={['#00000f']} />
         
         {/* Sky gradient */}
         <Sky />
@@ -184,6 +202,7 @@ const Scene = ({ projectPositions, portfolio, handleReturnToIntro, handleProject
 
         {/* Camera controls with 360-degree view */}
         <OrbitControls 
+          ref={controlsRef}
           enableZoom={true}
           minDistance={5}
           maxDistance={30}
