@@ -18,6 +18,8 @@ type PortfolioWithProjects = Prisma.PortfolioGetPayload<{
     owner: {
       select: {
         image: true;
+        name: true;
+        username: true;
       }
     }
   }

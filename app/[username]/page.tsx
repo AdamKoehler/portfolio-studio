@@ -20,7 +20,8 @@ export default async function Page({
       projects: true,
       owner: {
         select: {
-          image: true
+          image: true,
+          name: true
         }
       }
     },
