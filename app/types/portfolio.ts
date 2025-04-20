@@ -8,5 +8,6 @@ export type Portfolio = {
   projects: ProjectType[]
   owner: {
     image: string | null
+    username: string
   }
 } 

@@ -44,9 +44,13 @@ export const GetUserID = async () => {
     }
 }
 
-export const getUserByUsername = async (providedUsername: string): Promise<string | null> => {
-    // first we look for the portfolio by username
-    const portfolio = database.portfolio.findUnique({ where: { ownerUsername: providedUsername } });
-    // then we return the owner id
-    return portfolio.then((portfolio) => portfolio?.ownerId ?? null);
+export const getUserByUsername = async (providedUsername: string) => {
+    const user = await database.user.findFirst({
+        where: {
+            portfolio: {
+                ownerUsername: providedUsername
+            }
+        }
+    });
+    return user?.id ?? null;
 }
