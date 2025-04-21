@@ -19,7 +19,6 @@ type PortfolioWithProjects = Prisma.PortfolioGetPayload<{
       select: {
         image: true;
         name: true;
-        username: true;
       }
     }
   }
