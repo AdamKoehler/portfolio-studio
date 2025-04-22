@@ -55,7 +55,7 @@ export const IntroductionScreen = ({ portfolio, onStart }: IntroductionScreenPro
         body: JSON.stringify({
           fromEmail: data.email,
           message: data.message,
-          toUsername: portfolio.owner.username,
+          toUsername: portfolio.ownerUsername || '',
         }),
       })
 
@@ -87,6 +87,10 @@ export const IntroductionScreen = ({ portfolio, onStart }: IntroductionScreenPro
               alt="Profile"
               fill
               className="object-cover"
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                target.src = '/default-avatar.png'; // You'll need to add this image to your public folder
+              }}
             />
           </div>
         )}
