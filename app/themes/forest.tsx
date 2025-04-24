@@ -74,16 +74,11 @@ const ProjectPlaceholder = ({ position, project, onClick }: {
     }
   })
 
-  const handlePointerDown = (e: any) => {
-    e.stopPropagation()
-    onClick()
-  }
-
   return (
     <group ref={groupRef} position={position}>
       <primitive 
         object={scene.clone()} 
-        onPointerDown={handlePointerDown}
+        onClick={onClick}
         scale={[1, 1, 1]}
       />
       <Text
@@ -176,7 +171,11 @@ const Scene = ({ projectPositions, portfolio, handleReturnToIntro, handleProject
     <>
       {isLoading && <LoadingProgress progress={progress} />}
       
-      <Canvas camera={{ position: [0, 5, 15], fov: 75 }}>
+      <Canvas 
+        camera={{ position: [0, 5, 15], fov: 75 }}
+        gl={{ antialias: true }}
+        dpr={[1, 2]}
+      >
         <color attach="background" args={['#00000f']} />
         <fog attach="fog" args={['#D3D3D3', 60, 160]} />
         
