@@ -27,8 +27,6 @@ const contactSchema = z.object({
 type ContactFormData = z.infer<typeof contactSchema>
 
 export const IntroductionScreen = ({ portfolio, onStart }: IntroductionScreenProps) => {
-
-
   const [showContactForm, setShowContactForm] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   
@@ -77,6 +75,25 @@ export const IntroductionScreen = ({ portfolio, onStart }: IntroductionScreenPro
     }
   }
 
+  
+  const handleViews = async () => {
+    try {
+      await fetch('/api/track-view', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          portfolioId: portfolio.owner.name,
+        }),
+      });
+      
+      onStart();
+    } catch (error) {
+      onStart();
+    }
+  };
+
   return (
     <div className="absolute inset-0 flex flex-col items-center justify-center bg-black text-white z-10">
       <div className="max-w-2xl mx-auto p-8 text-center space-y-6">
@@ -122,7 +139,7 @@ export const IntroductionScreen = ({ portfolio, onStart }: IntroductionScreenPro
         </div>
         <div className="flex justify-center space-x-4">
           <Button
-            onClick={onStart}
+            onClick={handleViews}
             className="bg-green-600 hover:bg-green-700"
           >
             Explore My Projects
