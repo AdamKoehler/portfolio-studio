@@ -6,14 +6,16 @@ type PortfolioWithViews = {
   viewTimestamps: Date[];
 };
 
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { userId: string } }
-) {
+type Props = {
+  params: { userId: string };
+  searchParams: { [key: string]: string | string[] | undefined };
+};
+
+export async function GET(req: NextRequest, props: Props) {
   try {
     const portfolio = await prisma.portfolio.findUnique({
       where: {
-        ownerId: params.userId,
+        ownerId: props.params.userId,
       }
     }) as unknown as PortfolioWithViews;
 
