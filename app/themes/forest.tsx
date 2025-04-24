@@ -87,7 +87,7 @@ const ProjectPlaceholder = ({ position, project, onClick }: {
       <primitive 
         object={scene.clone()} 
         onClick={onClick}
-        scale={[0.5, 0.5, 0.5]}
+        scale={[1, 1, 1]}
       />
       <Text
         ref={textRef}
@@ -190,12 +190,12 @@ const Scene = ({ projectPositions, portfolio, handleReturnToIntro, handleProject
         <Sky />
         
         {/* Ambient light for general illumination */}
-        <ambientLight intensity={0.1} />
+        <ambientLight intensity={0.2} />
         
         {/* Directional light to simulate sunlight */}
         <directionalLight 
           position={[10, 50, 10]} 
-          intensity={0.2} 
+          intensity={0.3} 
           castShadow={true}
           color="#ffcc80"
         />
