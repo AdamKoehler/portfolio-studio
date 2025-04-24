@@ -80,11 +80,10 @@ const ProjectPlaceholder = ({ position, project, onClick }: {
     }
   })
 
-  // Adjust the y position to be slightly lower
-  const adjustedPosition: [number, number, number] = [position[0], position[1] - 0.5, position[2]]
+  const tentPosition: [number, number, number] = [position[0], position[0], position[2]]
 
   return (
-    <group ref={groupRef} position={adjustedPosition}>
+    <group ref={groupRef} position={tentPosition}>
       <primitive 
         object={scene.clone()} 
         onClick={onClick}
@@ -185,18 +184,18 @@ const Scene = ({ projectPositions, portfolio, handleReturnToIntro, handleProject
       
       <Canvas camera={{ position: [0, 5, 15], fov: 75 }}>
         <color attach="background" args={['#00000f']} />
-        <fog attach="fog" args={['#D3D3D3', 20, 50]} />
+        <fog attach="fog" args={['#D3D3D3', 60, 160]} />
         
         {/* Sky gradient */}
         <Sky />
         
         {/* Ambient light for general illumination */}
-        <ambientLight intensity={0.3} />
+        <ambientLight intensity={0.1} />
         
         {/* Directional light to simulate sunlight */}
         <directionalLight 
-          position={[10, 20, 10]} 
-          intensity={1} 
+          position={[10, 50, 10]} 
+          intensity={0.2} 
           castShadow={true}
           color="#ffcc80"
         />
