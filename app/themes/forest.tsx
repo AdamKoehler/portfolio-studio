@@ -59,6 +59,7 @@ const ProjectPlaceholder = ({ position, project, onClick }: {
   const groupRef = useRef<THREE.Group>(null!)
   const textRef = useRef<any>(null)
   const { scene } = useGLTF('/TentMesh.glb')
+  const meshRef = useRef<THREE.Mesh>(null!)
 
   useFrame((state) => {
     const { camera } = state
@@ -76,11 +77,12 @@ const ProjectPlaceholder = ({ position, project, onClick }: {
 
   return (
     <group ref={groupRef} position={position}>
-      <primitive 
-        object={scene.clone()} 
-        onClick={onClick}
-        scale={[1, 1, 1]}
-      />
+      <mesh ref={meshRef} onClick={onClick}>
+        <primitive 
+          object={scene.clone()} 
+          scale={[1, 1, 1]}
+        />
+      </mesh>
       <Text
         ref={textRef}
         position={[0, 2, 0]}
