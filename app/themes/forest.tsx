@@ -57,7 +57,7 @@ const ProjectPlaceholder = ({ position, project, onClick }: {
   project: ProjectType, 
   onClick: () => void 
 }) => {
-  const meshRef = useRef<THREE.Mesh>(null!)
+  const groupRef = useRef<THREE.Group>(null!)
   const textRef = useRef<any>(null)
   const { scene } = useGLTF('/TentMesh.glb')
 
@@ -70,20 +70,25 @@ const ProjectPlaceholder = ({ position, project, onClick }: {
     }
 
     // Make tent face the center of the scene
-    if (meshRef.current) {
-      const direction = new THREE.Vector3(0, 0, 0).sub(meshRef.current.position).normalize()
+    if (groupRef.current) {
+      // Calculate direction to center
+      const direction = new THREE.Vector3(0, 0, 0).sub(groupRef.current.position).normalize()
+      // Calculate rotation angle
       const targetRotation = Math.atan2(direction.x, direction.z)
-      meshRef.current.rotation.y = targetRotation
+      // Apply rotation
+      groupRef.current.rotation.y = targetRotation
     }
   })
 
+  // Adjust the y position to be slightly lower
+  const adjustedPosition: [number, number, number] = [position[0], position[1] - 0.5, position[2]]
+
   return (
-    <group position={position}>
+    <group ref={groupRef} position={adjustedPosition}>
       <primitive 
-        ref={meshRef} 
         object={scene.clone()} 
         onClick={onClick}
-        scale={[1, 1, 1]}
+        scale={[0.5, 0.5, 0.5]}
       />
       <Text
         ref={textRef}
@@ -180,12 +185,13 @@ const Scene = ({ projectPositions, portfolio, handleReturnToIntro, handleProject
       
       <Canvas camera={{ position: [0, 5, 15], fov: 75 }}>
         <color attach="background" args={['#00000f']} />
+        <fog attach="fog" args={['#00000f', 80, 300]} />
         
         {/* Sky gradient */}
         <Sky />
         
         {/* Ambient light for general illumination */}
-        <ambientLight intensity={0.5} />
+        <ambientLight intensity={0.3} />
         
         {/* Directional light to simulate sunlight */}
         <directionalLight 
