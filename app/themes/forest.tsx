@@ -91,7 +91,7 @@ const ProjectPlaceholder = ({ position, project, onClick }: {
       />
       <Text
         ref={textRef}
-        position={[0, 1, 0]}
+        position={[0, 2, 0]}
         fontSize={0.3}
         color="white"
         anchorX="center"
@@ -264,7 +264,9 @@ export default function ForestTheme({ portfolio }: ForestThemeProps) {
   }
 
   const handleProjectClick = (project: ProjectType) => {
-    setSelectedProject(project)
+    if (selectedProject === null) {
+      setSelectedProject(project)
+    }
   }
 
   const handleCloseDetails = () => {
