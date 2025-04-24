@@ -77,12 +77,17 @@ const ProjectPlaceholder = ({ position, project, onClick }: {
     }
   })
 
+  const handleClick = (e: any) => {
+    e.stopPropagation()
+    onClick()
+  }
+
   return (
     <group ref={groupRef} position={position}>
       <primitive 
         object={scene.clone()} 
-        onClick={onClick}
-        scale={[0.5, 0.5, 0.5]}
+        onClick={handleClick}
+        scale={[1,1,1]}
       />
       <Text
         ref={textRef}
