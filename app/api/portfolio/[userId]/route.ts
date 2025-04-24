@@ -8,12 +8,12 @@ type PortfolioWithViews = {
 
 export async function GET(
   request: Request,
-  context: { params: { userId: string } }
-) {
+  { params }: { params: { userId: string } }
+): Promise<NextResponse> {
   try {
     const portfolio = await prisma.portfolio.findUnique({
       where: {
-        ownerId: context.params.userId,
+        ownerId: params.userId,
       }
     }) as unknown as PortfolioWithViews;
 
