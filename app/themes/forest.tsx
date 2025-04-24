@@ -16,7 +16,6 @@ const CameraController = () => {
 
   useFrame(() => {
     if (controlsRef.current) {
-      // If camera is below 2 units, adjust it
       if (camera.position.y < 2) {
         camera.position.y = 2
         controlsRef.current.update()
@@ -31,8 +30,8 @@ const CameraController = () => {
       minDistance={5}
       maxDistance={30}
       enablePan={false}
-      minPolarAngle={Math.PI / 6} // looking down 30 degrees from horizontal
-      maxPolarAngle={Math.PI / 2} // upper limit 90 degrees from horizontal
+      minPolarAngle={Math.PI / 6}
+      maxPolarAngle={Math.PI / 2}
     />
   )
 }
@@ -64,12 +63,10 @@ const ProjectPlaceholder = ({ position, project, onClick }: {
   useFrame((state) => {
     const { camera } = state
     
-    // Keep text facing camera
     if (textRef.current) {
       textRef.current.lookAt(camera.position)
     }
 
-    // Make tent face the center of the scene
     if (groupRef.current) {
       const direction = new THREE.Vector3(0, 0, 0).sub(groupRef.current.position).normalize()
       const targetRotation = Math.atan2(direction.x, direction.z)
@@ -77,7 +74,7 @@ const ProjectPlaceholder = ({ position, project, onClick }: {
     }
   })
 
-  const handleClick = (e: any) => {
+  const handlePointerDown = (e: any) => {
     e.stopPropagation()
     onClick()
   }
@@ -86,7 +83,7 @@ const ProjectPlaceholder = ({ position, project, onClick }: {
     <group ref={groupRef} position={position}>
       <primitive 
         object={scene.clone()} 
-        onClick={handleClick}
+        onPointerDown={handlePointerDown}
         scale={[1, 1, 1]}
       />
       <Text
@@ -172,10 +169,7 @@ const Scene = ({ projectPositions, portfolio, handleReturnToIntro, handleProject
   handleReturnToIntro: () => void,
   handleProjectClick: (project: ProjectType) => void
 }) => {
-  // Use the useProgress hook to get real loading progress
   const { progress } = useProgress()
-  
-  // Show loading UI until progress reaches 100%
   const isLoading = progress < 100
 
   return (
@@ -285,12 +279,14 @@ export default function ForestTheme({ portfolio }: ForestThemeProps) {
       
       {showProjects && (
         <>
-          <Scene 
-            projectPositions={projectPositions}
-            portfolio={portfolio}
-            handleReturnToIntro={handleReturnToIntro}
-            handleProjectClick={handleProjectClick}
-          />
+          <div className="w-full h-full">
+            <Scene 
+              projectPositions={projectPositions}
+              portfolio={portfolio}
+              handleReturnToIntro={handleReturnToIntro}
+              handleProjectClick={handleProjectClick}
+            />
+          </div>
           
           {selectedProject && (
             <ProjectDetails 
