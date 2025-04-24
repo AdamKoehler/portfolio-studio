@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
 type PortfolioWithViews = {
@@ -7,9 +7,9 @@ type PortfolioWithViews = {
 };
 
 export async function GET(
-  request: Request,
+  req: NextRequest,
   { params }: { params: { userId: string } }
-): Promise<NextResponse> {
+) {
   try {
     const portfolio = await prisma.portfolio.findUnique({
       where: {
