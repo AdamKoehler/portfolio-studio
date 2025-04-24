@@ -185,7 +185,7 @@ const Scene = ({ projectPositions, portfolio, handleReturnToIntro, handleProject
       
       <Canvas camera={{ position: [0, 5, 15], fov: 75 }}>
         <color attach="background" args={['#00000f']} />
-        <fog attach="fog" args={['#00000f', 80, 300]} />
+        <fog attach="fog" args={['#D3D3D3', 20, 50]} />
         
         {/* Sky gradient */}
         <Sky />
@@ -197,6 +197,7 @@ const Scene = ({ projectPositions, portfolio, handleReturnToIntro, handleProject
         <directionalLight 
           position={[10, 20, 10]} 
           intensity={1} 
+          castShadow={true}
           color="#ffcc80"
         />
 
