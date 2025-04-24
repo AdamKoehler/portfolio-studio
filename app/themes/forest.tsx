@@ -130,25 +130,11 @@ const ForestScene = () => {
 
 // Project details modal
 const ProjectDetails = ({ project, onClose }: { project: ProjectType, onClose: () => void }) => {
-  const handleClose = (e: React.MouseEvent) => {
-    e.stopPropagation()
-    onClose()
-  }
-
   return (
     <div className="absolute inset-0 flex items-center justify-center z-30">
-      <div 
-        className="absolute inset-0 bg-black/80 backdrop-blur-sm" 
-        onClick={handleClose}
-      />
-      <div 
-        className="relative bg-green-900/90 p-8 rounded-lg max-w-4xl w-full mx-4 border border-green-700"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <button 
-          onClick={handleClose}
-          className="absolute top-4 right-4 text-green-400 hover:text-white"
-        >
+      <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={onClose} />
+      <div className="relative bg-green-900/90 p-8 rounded-lg max-w-4xl w-full mx-4 border border-green-700">
+        <button onClick={onClose} className="absolute top-4 right-4 text-green-400 hover:text-white">
           ✕
         </button>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
