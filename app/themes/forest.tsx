@@ -2,7 +2,7 @@
 
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { OrbitControls, Text, useGLTF, useProgress } from '@react-three/drei'
-import { Suspense, useRef, useState, useEffect, useMemo } from 'react'
+import { Suspense, useRef, useState } from 'react'
 import * as THREE from 'three'
 import { ProjectType } from '@/app/dashboard/update/page'
 import { IntroductionScreen } from './intro-screen'
@@ -59,6 +59,7 @@ const ProjectPlaceholder = ({ position, project, onClick }: {
 }) => {
   const meshRef = useRef<THREE.Mesh>(null!)
   const textRef = useRef<any>(null)
+  const { scene } = useGLTF('/TentMesh.glb')
 
   useFrame((state) => {
     const { camera } = state
@@ -67,17 +68,26 @@ const ProjectPlaceholder = ({ position, project, onClick }: {
     if (textRef.current) {
       textRef.current.lookAt(camera.position)
     }
+
+    // Make tent face the center of the scene
+    if (meshRef.current) {
+      const direction = new THREE.Vector3(0, 0, 0).sub(meshRef.current.position).normalize()
+      const targetRotation = Math.atan2(direction.x, direction.z)
+      meshRef.current.rotation.y = targetRotation
+    }
   })
 
   return (
     <group position={position}>
-      <mesh ref={meshRef} onClick={onClick}>
-        <sphereGeometry args={[0.5, 16, 16]} />
-        <meshBasicMaterial color="#8B4513" />
-      </mesh>
+      <primitive 
+        ref={meshRef} 
+        object={scene.clone()} 
+        onClick={onClick}
+        scale={[1, 1, 1]}
+      />
       <Text
         ref={textRef}
-        position={[0, 1, 0]}
+        position={[0, 1.5, 0]}
         fontSize={0.3}
         color="white"
         anchorX="center"
@@ -104,7 +114,7 @@ const LoadingProgress = ({ progress }: { progress: number }) => {
 
 // blender forest scene
 const ForestScene = () => {
-  const { scene } = useGLTF('/Forest.glb')
+  const { scene } = useGLTF('/ForestScene.glb')
   const forestRef = useRef<THREE.Group>(null!)
 
   return (

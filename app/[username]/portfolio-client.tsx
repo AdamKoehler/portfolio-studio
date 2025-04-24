@@ -2,10 +2,8 @@
 
 import dynamic from "next/dynamic";
 import { Prisma } from "@prisma/client";
-import { track } from "@vercel/analytics";
-import { useEffect } from "react";
 
-// Dynamically import theme components
+// Dynamically import theme components so that only the necessary components is loaded
 const themes = {
   space: dynamic(() => import('@/app/themes/space'), { ssr: false }),
   ocean: dynamic(() => import('@/app/themes/ocean'), { ssr: false }),
@@ -25,17 +23,9 @@ type PortfolioWithProjects = Prisma.PortfolioGetPayload<{
 }>;
 
 export function PortfolioClient({ portfolio }: { portfolio: PortfolioWithProjects }) {
-  // Get the appropriate theme component
+  // Assign the appropriate theme component
   const ThemeComponent = themes[portfolio.theme as keyof typeof themes];
 
-  // Track portfolio page visit
-  useEffect(() => {
-    track('portfolio_viewed', {
-      username: portfolio.ownerUsername,
-      theme: portfolio.theme,
-      projectCount: portfolio.projects.length
-    });
-  }, [portfolio]);
 
   return (
     <div className="w-full h-screen">
