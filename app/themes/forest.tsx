@@ -51,7 +51,7 @@ const Sky = () => {
   )
 }
 
-// temporarily using this as a placeholder for projects until I create campsite meshes in blender
+// projst placeholder using a capmsite mesh i made in blender
 const ProjectPlaceholder = ({ position, project, onClick }: { 
   position: [number, number, number], 
   project: ProjectType, 
@@ -71,27 +71,22 @@ const ProjectPlaceholder = ({ position, project, onClick }: {
 
     // Make tent face the center of the scene
     if (groupRef.current) {
-      // Calculate direction to center
       const direction = new THREE.Vector3(0, 0, 0).sub(groupRef.current.position).normalize()
-      // Calculate rotation angle
       const targetRotation = Math.atan2(direction.x, direction.z)
-      // Apply rotation
       groupRef.current.rotation.y = targetRotation
     }
   })
 
-  const tentPosition: [number, number, number] = [position[0], position[0], position[2]]
-
   return (
-    <group ref={groupRef} position={tentPosition}>
+    <group ref={groupRef} position={position}>
       <primitive 
         object={scene.clone()} 
         onClick={onClick}
-        scale={[1, 1, 1]}
+        scale={[0.5, 0.5, 0.5]}
       />
       <Text
         ref={textRef}
-        position={[0, 1.5, 0]}
+        position={[0, 1, 0]}
         fontSize={0.3}
         color="white"
         anchorX="center"
