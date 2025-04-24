@@ -127,9 +127,24 @@ const ForestScene = () => {
 const ProjectDetails = ({ project, onClose }: { project: ProjectType, onClose: () => void }) => {
   return (
     <div className="absolute inset-0 flex items-center justify-center z-30">
-      <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative bg-green-900/90 p-8 rounded-lg max-w-4xl w-full mx-4 border border-green-700">
-        <button onClick={onClose} className="absolute top-4 right-4 text-green-400 hover:text-white">
+      <div 
+        className="absolute inset-0 bg-black/80 backdrop-blur-sm" 
+        onClick={(e) => {
+          e.stopPropagation();
+          onClose();
+        }} 
+      />
+      <div 
+        className="relative bg-green-900/90 p-8 rounded-lg max-w-4xl w-full mx-4 border border-green-700"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <button 
+          onClick={(e) => {
+            e.stopPropagation();
+            onClose();
+          }} 
+          className="absolute top-4 right-4 text-green-400 hover:text-white"
+        >
           ✕
         </button>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -264,7 +279,7 @@ export default function ForestTheme({ portfolio }: ForestThemeProps) {
     for (let i = 0; i <= count; i++) {
       const angle = (i / (count + 1)) * Math.PI * 2
       const x = Math.cos(angle) * radius
-      const y = 1 // Height above ground
+      const y = 0
       const z = Math.sin(angle) * radius
       positions.push([x, y, z])
     }
