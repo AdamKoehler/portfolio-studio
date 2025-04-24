@@ -87,7 +87,7 @@ const ProjectPlaceholder = ({ position, project, onClick }: {
       <primitive 
         object={scene.clone()} 
         onClick={handleClick}
-        scale={[1,1,1]}
+        scale={[1, 1, 1]}
       />
       <Text
         ref={textRef}
@@ -130,24 +130,23 @@ const ForestScene = () => {
 
 // Project details modal
 const ProjectDetails = ({ project, onClose }: { project: ProjectType, onClose: () => void }) => {
+  const handleClose = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    onClose()
+  }
+
   return (
     <div className="absolute inset-0 flex items-center justify-center z-30">
       <div 
         className="absolute inset-0 bg-black/80 backdrop-blur-sm" 
-        onClick={(e) => {
-          e.stopPropagation();
-          onClose();
-        }} 
+        onClick={handleClose}
       />
       <div 
         className="relative bg-green-900/90 p-8 rounded-lg max-w-4xl w-full mx-4 border border-green-700"
         onClick={(e) => e.stopPropagation()}
       >
         <button 
-          onClick={(e) => {
-            e.stopPropagation();
-            onClose();
-          }} 
+          onClick={handleClose}
           className="absolute top-4 right-4 text-green-400 hover:text-white"
         >
           ✕
@@ -264,9 +263,7 @@ export default function ForestTheme({ portfolio }: ForestThemeProps) {
   }
 
   const handleProjectClick = (project: ProjectType) => {
-    if (selectedProject === null) {
-      setSelectedProject(project)
-    }
+    setSelectedProject(project)
   }
 
   const handleCloseDetails = () => {
