@@ -33,7 +33,7 @@ const ClientDashboard = ({ user }: ClientDashboardProps) => {
   useEffect(() => {
     const fetchViewData = async () => {
       try {
-        const response = await fetch(`/api/portfolio/${user.id}`);
+        const response = await fetch(`/api/portfolio?userId=${user.id}`);
         const data = await response.json();
         setViewData(data);
       } catch (error) {

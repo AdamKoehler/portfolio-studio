@@ -1,22 +1,28 @@
-import { NextResponse, NextRequest } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
 
 type PortfolioWithViews = {
+  id: string;
+  ownerId: string;
+  aboutMe: string | null;
+  theme: string;
+  github: string | null;
+  linkedin: string | null;
+  ownerUsername: string | null;
   viewCount: number;
   viewTimestamps: Date[];
 };
 
-type Props = {
-  params: { userId: string };
-  searchParams: { [key: string]: string | string[] | undefined };
-};
-
-export async function GET(req: NextRequest, props: Props) {
+export async function GET(req: NextRequest) {
   try {
+    const userID = req.nextUrl.searchParams.get("userId");
+
+    if (!userID) {
+      return NextResponse.json({ error: 'User ID is required' }, { status: 400 });
+    }
+
     const portfolio = await prisma.portfolio.findUnique({
-      where: {
-        ownerId: props.params.userId,
-      }
+      where: { ownerId: userID }
     }) as unknown as PortfolioWithViews;
 
     if (!portfolio) {
