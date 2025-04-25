@@ -84,7 +84,7 @@ export const IntroductionScreen = ({ portfolio, onStart }: IntroductionScreenPro
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          portfolioId: portfolio.owner.name,
+          portfolioId: portfolio.id,
         }),
       });
       

@@ -1,6 +1,7 @@
 import { ProjectType } from '@/app/dashboard/update/page'
 
 export type Portfolio = {
+  id: string
   aboutMe: string | null
   theme: string
   github: string | null

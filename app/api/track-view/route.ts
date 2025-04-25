@@ -22,12 +22,16 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Portfolio not found' }, { status: 404 });
     }
 
+    // Initialize viewCount and viewTimestamps if they don't exist
+    const currentViewCount = portfolio.viewCount || 0;
+    const currentTimestamps = portfolio.viewTimestamps || [];
+
     const result = await prisma.portfolio.update({
       where: { id: portfolioId },
       data: {
         // @ts-ignore - Fields exist in schema but types aren't being generated correctly
-        viewCount: portfolio.viewCount + 1,
-        viewTimestamps: [...portfolio.viewTimestamps, new Date()]
+        viewCount: currentViewCount + 1,
+        viewTimestamps: [...currentTimestamps, new Date()]
       }
     }) as unknown as PortfolioWithViews;
 
