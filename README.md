@@ -1,5 +1,5 @@
 # Portfolio Studio
-# https://www.3dportfol.io/
+https://www.3dportfol.io/
 A modern, interactive portfolio platform that allows users to create and showcase their work with customizable 3D themes. Built with Next.js, Three.js, Typescript, and MongoDB.
 
 
