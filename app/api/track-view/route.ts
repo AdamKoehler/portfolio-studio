@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
-type PortfolioWithViews = {
+interface PortfolioWithViews {
   viewCount: number;
   viewTimestamps: Date[];
-};
+}
 
 export async function POST(request: Request) {
   try {
@@ -14,31 +14,24 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Portfolio ID is required' }, { status: 400 });
     }
 
-    // Add a new timestamp and increment the view count
-    const result = await prisma.$transaction(async (tx) => {
-      const portfolio = await tx.portfolio.findUnique({
-        where: { id: portfolioId }
-      }) as unknown as PortfolioWithViews;
+    const portfolio = await prisma.portfolio.findUnique({
+      where: { id: portfolioId }
+    }) as unknown as PortfolioWithViews;
 
-      if (!portfolio) {
-        throw new Error('Portfolio not found');
+    if (!portfolio) {
+      return NextResponse.json({ error: 'Portfolio not found' }, { status: 404 });
+    }
+
+    const result = await prisma.portfolio.update({
+      where: { id: portfolioId },
+      data: {
+        // @ts-ignore - Fields exist in schema but types aren't being generated correctly
+        viewCount: portfolio.viewCount + 1,
+        viewTimestamps: [...portfolio.viewTimestamps, new Date()]
       }
+    }) as unknown as PortfolioWithViews;
 
-      // Use a raw update to bypass type checking
-      const updatedPortfolio = await tx.portfolio.update({
-        where: { id: portfolioId },
-        data: {
-          // @ts-ignore
-          viewCount: portfolio.viewCount + 1,
-          // @ts-ignore
-          viewTimestamps: [...portfolio.viewTimestamps, new Date()]
-        }
-      }) as unknown as PortfolioWithViews;
-
-      return updatedPortfolio;
-    });
-
-    return NextResponse.json({ 
+    return NextResponse.json({
       viewCount: result.viewCount,
       viewTimestamps: result.viewTimestamps
     });
