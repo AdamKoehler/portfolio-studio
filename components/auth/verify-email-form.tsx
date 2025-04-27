@@ -59,13 +59,9 @@ const VerifyEmailForm = () => {
             backButtonLabel="Back to login"
         >
             <div className="text-muted-foreground text-sm flex items-center justify-center w-full">
-                {isLoading && !success && !error && <p>Please wait...</p>}
-                {!isLoading && (
-                    <>
-                        <FormSuccess message={success} />
-                        <FormError message={error} />
-                    </>
-                )}
+                {isLoading && <p>Please wait...</p>}
+                {!isLoading && success && <FormSuccess message={success} />}
+                {!isLoading && error && <FormError message={error} />}
             </div>
         </CardWrapper>
     );
