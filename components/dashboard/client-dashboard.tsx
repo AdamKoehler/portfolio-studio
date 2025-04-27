@@ -24,7 +24,7 @@ interface ClientDashboardProps {
 
 interface ViewData {
   viewCount: number;
-  recentViews: Date[];
+  recentViews?: Date[];
 }
 
 const ClientDashboard = ({ user }: ClientDashboardProps) => {
@@ -35,7 +35,10 @@ const ClientDashboard = ({ user }: ClientDashboardProps) => {
       try {
         const response = await fetch(`/api/portfolio?userId=${user.id}`);
         const data = await response.json();
-        setViewData(data);
+        setViewData({
+          viewCount: data.viewCount || 0,
+          recentViews: data.recentViews || []
+        });
       } catch (error) {
         console.error('Error fetching view data:', error);
         setViewData({ viewCount: 0, recentViews: [] });
@@ -72,7 +75,7 @@ const ClientDashboard = ({ user }: ClientDashboardProps) => {
                     <p className="text-muted-foreground text-sm sm:text-base">Total Views</p>
                   </Card>
                   
-                  {viewData.recentViews.length > 0 && (
+                  {viewData.recentViews && viewData.recentViews.length > 0 && (
                     <div className="mt-4">
                       <h3 className="text-lg sm:text-xl font-semibold mb-4">Recent Views</h3>
                       <div className="overflow-y-auto max-h-[40vh] sm:max-h-[30vh] pr-4">
