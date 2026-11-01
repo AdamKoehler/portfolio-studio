@@ -6,12 +6,11 @@ import { Button } from "@/components/ui/button";
 import GithubIcon from "@/components/icons/github-icon";
 import GoogleIcon from "@/components/icons/google-icon";
 import { SonnerAlert } from "@/components/sonner-alert/sonner";
-const domain = "https://www.3dportfol.io/";
 export function OAuthSeparator() {
 
   const handleOAuthLogin = async (provider: string) => {
 
-    const res = await signIn(provider, { callbackUrl: `${domain}/dashboard` });
+    const res = await signIn(provider, { callbackUrl: "/dashboard" });
 
     if (res?.error) {// error
       SonnerAlert("OAuth Login failed. Please try again.", "error");

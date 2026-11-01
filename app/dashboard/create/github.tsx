@@ -49,18 +49,21 @@ const fetchRepositories = async () => {
         }),
       });
   
-      if (!response.ok) {
-        SonnerAlert(`Error importing repositories, response: ${response.status}`, "error");
-        return;
-      }
-  
       const data = await response.json();
-  
-      if (data.error) {
-        SonnerAlert(`Error importing repositories: ${data.error}`, "error");
+
+      if (!response.ok || data.error) {
+        SonnerAlert(`Error importing repositories: ${data.error ?? response.statusText}`, "error");
         return;
       }
-      SonnerAlert(`Repositories imported successfully.`, "success");
+
+      if (data.failed?.length > 0) {
+        SonnerAlert(
+          `Imported ${data.imported} of ${selectedRepoIds.length} repositories. ${data.failed.length} failed.`,
+          "error"
+        );
+      } else {
+        SonnerAlert(`Repositories imported successfully.`, "success");
+      }
       onImportSuccess(); // update parent component to refresh the page
     } catch (error) {
       SonnerAlert(`${error}`, "error");

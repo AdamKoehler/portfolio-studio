@@ -28,17 +28,34 @@ export async function POST(req: Request) {
 
     // Iterate through the array of repository IDs and fetch details
     const importedRepos = [];
+    const failedRepos: { id: string; reason: string }[] = [];
     for (const repoID of repositories) {
-      const repoDetails = await getRepoDetails(repoID, userID); // passing userID to the function
-      if (repoDetails) {
+      try {
+        const repoDetails = await getRepoDetails(repoID, userID); // passing userID to the function
         importedRepos.push(repoDetails);
+      } catch (error) {
+        console.error(`Error importing repository ${repoID}:`, error);
+        failedRepos.push({
+          id: repoID,
+          reason: error instanceof Error ? error.message : "Unknown error",
+        });
       }
     }
 
     // Revalidate the create page to reflect the new imports
     revalidatePath('/dashboard/create');
 
-    return NextResponse.json({ success: true, imported: importedRepos.length }, { status: 200 });
+    if (importedRepos.length === 0) {
+      return NextResponse.json(
+        { error: "Failed to import any repositories", failed: failedRepos },
+        { status: 502 }
+      );
+    }
+
+    return NextResponse.json(
+      { success: true, imported: importedRepos.length, failed: failedRepos },
+      { status: 200 }
+    );
   } catch (error) {
     console.error("Error importing repositories:", error);
     return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
@@ -46,37 +63,31 @@ export async function POST(req: Request) {
 }
 
 async function getRepoDetails(id: string, userID: string) {
-  try {
-    const response = await fetch(`https://api.github.com/repositories/${id}`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${key}`,
-        "Content-Type": "application/json",
-        Accept: "application/vnd.github.v3+json",
-      },
-    });
+  const response = await fetch(`https://api.github.com/repositories/${id}`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${key}`,
+      "Content-Type": "application/json",
+      Accept: "application/vnd.github.v3+json",
+    },
+  });
 
-    if (!response.ok) {
-      throw new Error(`GitHub API error: ${response.status} ${response.statusText}`);
-    }
-
-    const data = await response.json();
-    // Create the project entry in the database
-    const project = await database.project.create({
-      data: {
-        title: data.name,
-        description: data.description || "",
-        url: data.html_url,
-        owner: {
-          connect: { id: userID },
-        },
-      },
-    });
-
-    console.log("Project created successfully:", project);
-    return project; // Return the project for importing tracking
-  } catch (error) {
-    console.error("Error fetching repository details:", error);
-    return null; // Return null if there was an error
+  if (!response.ok) {
+    throw new Error(`GitHub API error: ${response.status} ${response.statusText}`);
   }
+
+  const data = await response.json();
+  // Create the project entry in the database
+  const project = await database.project.create({
+    data: {
+      title: data.name,
+      description: data.description || "",
+      url: data.html_url,
+      owner: {
+        connect: { id: userID },
+      },
+    },
+  });
+
+  return project; // Return the project for importing tracking
 }
